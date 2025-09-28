@@ -201,7 +201,6 @@ async function initializeApp() {
 
     // Wait for MediaPipe libraries to load
     await waitForMediaPipe();
-
     updateStatus("Loading AI model...", 'loading');
 
     // Setup the AI Model with error handling
