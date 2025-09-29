@@ -1,46 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Pose Test</title>
-  <style>
-    body { font-family: sans-serif; margin: 2em; text-align: center; }
-    #liveView {
-      position: relative;
-      display: inline-block;
-      border: 1px solid #555;
-      max-width: 100%;
-    }
-    .videoView { display: block; width: 100%; height: auto; }
-    .layer { position: absolute; top: 0; left: 0; }
-    #status {
-      margin: 1em 0;
-      padding: 0.5em;
-      border-radius: 4px;
-      font-weight: bold;
-    }
-    .status-loading { background-color: #f0f8ff; color: #0066cc; }
-    .status-ready { background-color: #f0fff0; color: #006600; }
-    .status-error { background-color: #fff0f0; color: #cc0000; }
-  </style>
+  <title>AI Ski Coach</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>AI Can See Your Dots! 😠</h1>
+  <h1>AI Ski Coach</h1>
+  <p>Upload your ski video. The AI analysis will appear when you press play.</p>
+  <input type="file" id="videoUpload" accept="video/*">
 
-  <!-- Video Upload Section -->
-  <div style="margin: 1em 0;">
-    <input type="file" id="videoUpload" accept="video/*">
-    <p id="statusBar">Status: Ready</p>
+  <div id="playerContainer" class="hidden">
+    <video id="resultsVideo" controls></video>
+    <canvas id="resultsCanvas"></canvas>
   </div>
 
-  <div id="status">Initializing...</div>
-  <h2 id="feedback">Knee Angle: --</h2>
-
-  <!-- Video analysis area will be created dynamically when video is uploaded -->
-  
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous" onload="console.log('Drawing utils loaded')" onerror="console.error('Failed to load drawing utils')"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous" onload="console.log('Pose loaded')" onerror="console.error('Failed to load pose')"></script>
-
-  <!-- Load our script after MediaPipe -->
-  <script src="script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script type="module" src="script.js"></script>
 </body>
 </html>
