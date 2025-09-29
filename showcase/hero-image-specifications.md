@@ -1,6 +1,6 @@
 # Hero Image Specifications for Slope Logic
 
-## Image Requirements
+## UPDATED: Integrated Hero Image Requirements
 
 ### File Details
 - **Filename**: `hero-ski-analysis.jpg`
@@ -15,7 +15,7 @@
 - **Skiing position**: Mid-turn on a snowy slope
 - **Angle**: Side profile or 3/4 view to clearly show body form
 - **Visibility**: Clear view of skier's body segments (head, shoulders, torso, hips, knees, ankles)
-- **Clothing**: Contrasting colors (dark jacket/pants) against white snow for better AI overlay visibility
+- **Clothing**: Contrasting colors (dark jacket/pants) against white snow
 
 #### Background
 - **Setting**: Clean, snowy mountain slope
@@ -24,72 +24,65 @@
 - **Clutter**: Minimal background distractions
 - **Sky**: Blue sky or overcast but bright
 
-#### Technical Considerations
-- **Contrast**: High contrast between skier and background
-- **Focus**: Sharp focus on the skier
-- **Body position**: Clear joint visibility for AI pose estimation
-- **Action**: Dynamic skiing pose (carved turn, not straight skiing)
+### CRITICAL: AI Elements Must Be Part of the Image
 
-### AI Overlay Integration
+**Unlike the previous approach with HTML/CSS overlays, the AI analysis elements must be integrated directly into the image itself:**
 
-The HTML/CSS structure includes:
+#### Required AI Elements in the Image:
+1. **Pose Detection Points**: Bright cyan/blue dots on key body joints (head, shoulders, hips, knees, ankles)
+2. **Skeleton Lines**: Connected lines between the pose points showing body structure analysis
+3. **Feedback Annotations**: Small text labels or icons near body parts showing AI coaching tips:
+   - "Good form" near upper body
+   - "Adjust angle" near knees
+   - "Lean forward" or similar coaching cues
+4. **Professional UI Elements**: Clean, modern interface elements that look like they're from a ski analysis app
 
-#### Pose Points (8 key joints)
-- Head (25% from top, 48% from left)
-- Left Shoulder (35% from top, 46% from left)
-- Right Shoulder (35% from top, 52% from left)
-- Hip Center (50% from top, 49% from left)
-- Left Knee (65% from top, 45% from left)
-- Right Knee (65% from top, 53% from left)
-- Left Ankle (80% from top, 43% from left)
-- Right Ankle (80% from top, 55% from left)
+#### Visual Style for AI Elements:
+- **Color scheme**: Bright cyan (#00D4FF) for pose points and lines
+- **Typography**: Clean, modern font for text annotations
+- **Style**: Futuristic but not overwhelming - should enhance, not dominate the image
+- **Transparency**: AI elements should be semi-transparent to not block the skier
+- **Professional look**: Should appear as if from a real AI coaching application
 
-#### Feedback Bubbles (3 examples)
-1. **Success feedback**: "Good balance" (top right)
-2. **Warning feedback**: "Lean more forward" (middle left)
-3. **Tip feedback**: "Improve knee angle" (bottom right)
+### How to Create/Source the Image
 
-#### Visual Effects
-- Glowing cyan pose points with pulse animation
-- Connected skeleton lines between joints
-- Semi-transparent feedback bubbles with icons
-- Floating animation for entire image container
+#### Option 1: AI Image Generation (Recommended)
+**Midjourney Prompt:**
+```
+Professional skier in dynamic carved turn on snowy mountain slope, side view, with bright cyan AI pose detection points overlaid on joints (head, shoulders, hips, knees, ankles), connected skeleton lines, small coaching text labels "Good form", "Adjust angle", "Lean forward", futuristic ski analysis interface, clean modern UI, bright lighting, realistic photography style, 3:2 aspect ratio --ar 3:2 --style raw
+```
 
-### Where to Source the Image
+**DALL-E Prompt:**
+```
+High-quality photograph of a skier in dynamic action pose on a bright snowy slope, with AI analysis overlay showing bright cyan pose detection points on body joints, connected skeleton lines, and small text coaching feedback labels, professional ski coaching app interface, clean modern design, side view angle, mountain background
+```
 
-#### Option 1: Stock Photography
-- **Shutterstock**: Search "skier action pose side view"
-- **Unsplash**: Search "skiing downhill professional"
-- **Getty Images**: Search "ski technique demonstration"
+#### Option 2: Photo Editing Approach
+1. Find high-quality skiing action photo (stock photo sites)
+2. Use Photoshop/GIMP to add AI elements:
+   - Add bright cyan dots on key joints
+   - Draw connecting lines between joints
+   - Add text annotations with coaching tips
+   - Use modern UI design elements
 
-#### Option 2: AI Generation
-- **Midjourney prompt**: "Professional skier in dynamic carved turn, side view, bright snowy slope, high contrast, realistic photography style, clear body segments visible"
-- **DALL-E prompt**: "High-quality photo of a skier in action pose on snowy slope, side angle view, bright lighting, professional skiing technique"
-
-#### Option 3: Professional Photography
-- Commission a ski photographer
-- Ensure model release and usage rights
-- Specific direction for AI overlay compatibility
+#### Option 3: Professional Creation
+- Commission a designer/photographer
+- Provide the detailed specifications above
+- Ensure all AI elements are integrated into the final image
 
 ### Installation Instructions
 
-1. Save the image as `hero-ski-analysis.jpg` in the `showcase/` folder
-2. The HTML and CSS are already configured to display the image with AI overlays
-3. If the image doesn't exist, a placeholder will be shown
+1. Save the final image as `hero-ski-analysis.jpg` in the `showcase/` folder
+2. The HTML and CSS are configured for a simple, full-width hero image
+3. If the image doesn't exist, a placeholder with specifications will be shown
 4. Ensure the image is optimized for web (compressed but high quality)
-
-### Optimization Tips
-
-- Use WebP format with JPG fallback for better compression
-- Implement lazy loading if needed
-- Consider responsive images with srcset for different screen sizes
-- Test the pose point positions and adjust in CSS if needed based on actual skier position
 
 ### Current Implementation Status
 
-✅ HTML structure complete with pose points and feedback bubbles
-✅ CSS styling with animations and responsive design
-✅ Fallback placeholder when image is missing
-❌ Actual hero image (needs to be sourced/created)
+✅ Simplified HTML structure for full-width hero image
+✅ Clean CSS styling with responsive design
+✅ Informative placeholder when image is missing
+✅ Professional floating animation
+❌ Actual integrated hero image (needs to be created)
 
-The implementation will automatically work once the image file is added to the showcase folder.
+**The new implementation is much cleaner and will showcase a single, powerful image that demonstrates your AI ski analysis technology directly within the image itself.**
