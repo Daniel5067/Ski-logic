@@ -85,6 +85,9 @@ function onPoseResults(results) {
 
     // Draw pose landmarks if detected
     if (results.poseLandmarks) {
+        // Store current pose landmarks for data capture
+        currentPoseLandmarks = results.poseLandmarks;
+
         // Draw pose connections (skeleton)
         drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
             color: '#00FF00',
@@ -101,6 +104,9 @@ function onPoseResults(results) {
         if (isAnalyzing) {
             compareWithProModel(results.poseLandmarks);
         }
+    } else {
+        // Clear stored landmarks if no pose detected
+        currentPoseLandmarks = null;
     }
 }
 
@@ -196,6 +202,30 @@ async function detectPose() {
 videoPlayer.addEventListener('resize', function() {
     poseCanvas.width = videoPlayer.videoWidth;
     poseCanvas.height = videoPlayer.videoHeight;
+});
+
+// Data capture feature - press 'p' to capture current pose landmarks
+let currentPoseLandmarks = null;
+
+window.addEventListener('keydown', function(event) {
+    // Check if 'p' key is pressed and video is playing
+    if (event.key === 'p' || event.key === 'P') {
+        if (isAnalyzing && currentPoseLandmarks) {
+            console.log('Captured Pose Landmarks:', JSON.stringify(currentPoseLandmarks, null, 2));
+            console.log('Raw Pose Landmarks Array:', currentPoseLandmarks);
+
+            // Also show a brief visual confirmation
+            const originalColor = similarityScoreElement.style.backgroundColor;
+            similarityScoreElement.style.backgroundColor = '#28a745';
+            setTimeout(() => {
+                similarityScoreElement.style.backgroundColor = originalColor;
+            }, 200);
+        } else if (!isAnalyzing) {
+            console.log('Data capture: Video must be playing to capture pose data');
+        } else {
+            console.log('Data capture: No pose landmarks detected in current frame');
+        }
+    }
 });
 
 // Initialize pose detection when page loads
