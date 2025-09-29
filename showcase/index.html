@@ -134,7 +134,7 @@
                         <li><i class="fas fa-check"></i> Progress tracking</li>
                         <li><i class="fas fa-check"></i> Email support</li>
                     </ul>
-                    <button class="plan-button">Get Started</button>
+                    <button class="plan-button" data-plan="basic" data-price="19">Buy Now</button>
                 </div>
 
                 <!-- Pro Plan (Most Popular) -->
@@ -157,7 +157,7 @@
                         <li><i class="fas fa-check"></i> Priority support</li>
                         <li><i class="fas fa-check"></i> Export analytics</li>
                     </ul>
-                    <button class="plan-button featured">Start Pro Trial</button>
+                    <button class="plan-button featured" data-plan="pro" data-price="49">Buy Now</button>
                 </div>
 
                 <!-- Coach Plan -->
@@ -179,7 +179,7 @@
                         <li><i class="fas fa-check"></i> API access</li>
                         <li><i class="fas fa-check"></i> Dedicated support</li>
                     </ul>
-                    <button class="plan-button">Contact Sales</button>
+                    <button class="plan-button" data-plan="coach" data-price="99">Buy Now</button>
                 </div>
             </div>
 
@@ -240,6 +240,85 @@
         </div>
     </footer>
 
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="payment-modal">
+        <div class="payment-content">
+            <div class="payment-header">
+                <h2>Complete Your Purchase</h2>
+                <button class="close-modal" onclick="closePaymentModal()">&times;</button>
+            </div>
+
+            <div class="payment-body">
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div class="plan-details">
+                        <div class="plan-info">
+                            <span id="selectedPlan" class="plan-name">Pro Plan</span>
+                            <span id="selectedPrice" class="plan-price">$49/month</span>
+                        </div>
+                        <div class="plan-features">
+                            <p>✓ 30-day money-back guarantee</p>
+                            <p>✓ Cancel anytime</p>
+                            <p>✓ Instant access</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-form">
+                    <h3>Payment Information</h3>
+                    <form id="checkoutForm">
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number</label>
+                            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" id="expiry" name="expiry" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" id="cvv" name="cvv" placeholder="123" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="billingAddress">Billing Address</label>
+                            <input type="text" id="billingAddress" name="billingAddress" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipCode">ZIP Code</label>
+                                <input type="text" id="zipCode" name="zipCode" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-payment">
+                            <i class="fas fa-lock"></i>
+                            Complete Purchase - <span id="finalPrice">$49/month</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Smooth scrolling script -->
     <script>
         // Smooth scrolling for navigation links
@@ -255,6 +334,88 @@
         // CTA button functionality
         document.querySelector('.cta-button').addEventListener('click', function() {
             alert('Thank you for your interest! Early access signups coming soon.');
+        });
+
+        // Payment modal functionality
+        function openPaymentModal(plan, price) {
+            const modal = document.getElementById('paymentModal');
+            const planName = document.getElementById('selectedPlan');
+            const planPrice = document.getElementById('selectedPrice');
+            const finalPrice = document.getElementById('finalPrice');
+
+            // Capitalize plan name
+            const capitalizedPlan = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+
+            planName.textContent = capitalizedPlan;
+            planPrice.textContent = `$${price}/month`;
+            finalPrice.textContent = `$${price}/month`;
+
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('paymentModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Add event listeners to Buy Now buttons
+        document.querySelectorAll('.plan-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const plan = this.getAttribute('data-plan');
+                const price = this.getAttribute('data-price');
+                openPaymentModal(plan, price);
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('paymentModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePaymentModal();
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Simulate payment processing
+            const submitButton = document.querySelector('.submit-payment');
+            const originalText = submitButton.innerHTML;
+
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitButton.disabled = true;
+
+            setTimeout(() => {
+                alert('Payment successful! Welcome to Slope Logic. Check your email for account details.');
+                closePaymentModal();
+                submitButton.innerHTML = originalText;
+                submitButton.disabled = false;
+                document.getElementById('checkoutForm').reset();
+            }, 2000);
+        });
+
+        // Format card number input
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+            if (formattedValue.length > 19) formattedValue = formattedValue.slice(0, 19);
+            e.target.value = formattedValue;
+        });
+
+        // Format expiry input
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Format CVV input
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
         });
     </script>
 </body>
