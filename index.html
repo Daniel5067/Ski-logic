@@ -25,6 +25,9 @@
                 </video>
                 <canvas id="poseCanvas" class="pose-overlay"></canvas>
             </div>
+
+            <!-- Pro Similarity Score Display -->
+            <h2 id="similarity-score">Pro Similarity Score: --%</h2>
         </div>
     </div>
 
@@ -32,7 +35,10 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 
+    <!-- Pro model data -->
+    <script type="module" src="pro_model.js"></script>
+
     <!-- Our main script -->
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 </html>

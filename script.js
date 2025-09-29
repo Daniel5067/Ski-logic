@@ -1,13 +1,22 @@
+// Import pro model data
+import { proTurnData } from './pro_model.js';
+
 // Get HTML elements
 const videoUpload = document.getElementById('videoUpload');
 const videoContainer = document.getElementById('videoContainer');
 const videoPlayer = document.getElementById('videoPlayer');
 const poseCanvas = document.getElementById('poseCanvas');
 const canvasCtx = poseCanvas.getContext('2d');
+const similarityScoreElement = document.getElementById('similarity-score');
 
 // Initialize MediaPipe Pose
 let pose;
 let isAnalyzing = false;
+
+// Similarity scoring variables
+let frameCount = 0;
+let totalSimilarity = 0;
+let currentAverageScore = 0;
 
 // Initialize pose detection when page loads
 function initializePose() {
@@ -28,6 +37,47 @@ function initializePose() {
     pose.onResults(onPoseResults);
 }
 
+// Calculate pose similarity between user and pro poses
+function calculatePoseSimilarity(userPose, proPose) {
+    if (!userPose || !proPose || userPose.length !== proPose.length) {
+        return 0;
+    }
+
+    let totalDistance = 0;
+    let validLandmarks = 0;
+
+    // Compare each landmark point
+    for (let i = 0; i < userPose.length; i++) {
+        const userPoint = userPose[i];
+        const proPoint = proPose[i];
+
+        // Only compare landmarks that are visible in both poses
+        if (userPoint.visibility > 0.5 && proPoint.visibility > 0.5) {
+            // Calculate Euclidean distance between corresponding landmarks
+            const dx = userPoint.x - proPoint.x;
+            const dy = userPoint.y - proPoint.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            totalDistance += distance;
+            validLandmarks++;
+        }
+    }
+
+    if (validLandmarks === 0) {
+        return 0;
+    }
+
+    // Calculate average distance
+    const averageDistance = totalDistance / validLandmarks;
+
+    // Convert distance to similarity percentage (0-100%)
+    // Assuming max meaningful distance is around 0.5 (half the screen)
+    const maxDistance = 0.5;
+    const similarity = Math.max(0, (1 - (averageDistance / maxDistance)) * 100);
+
+    return similarity;
+}
+
 // Handle pose detection results
 function onPoseResults(results) {
     // Clear the canvas
@@ -46,7 +96,47 @@ function onPoseResults(results) {
             color: '#FF0000',
             radius: 6
         });
+
+        // Compare with pro model and update similarity score
+        if (isAnalyzing) {
+            compareWithProModel(results.poseLandmarks);
+        }
     }
+}
+
+// Compare current pose with pro model and update similarity score
+function compareWithProModel(userPose) {
+    // Get corresponding pro pose frame (cycle through pro data)
+    const proFrameIndex = frameCount % proTurnData.length;
+    const proPose = proTurnData[proFrameIndex];
+
+    // Calculate similarity for current frame
+    const frameSimilarity = calculatePoseSimilarity(userPose, proPose);
+
+    // Update running totals
+    frameCount++;
+    totalSimilarity += frameSimilarity;
+    currentAverageScore = totalSimilarity / frameCount;
+
+    // Update the display
+    updateSimilarityDisplay();
+}
+
+// Update the similarity score display
+function updateSimilarityDisplay() {
+    const scoreText = `Pro Similarity Score: ${Math.round(currentAverageScore)}%`;
+    similarityScoreElement.textContent = scoreText;
+
+    // Add color coding based on score
+    similarityScoreElement.style.color = getSimilarityColor(currentAverageScore);
+}
+
+// Get color based on similarity score
+function getSimilarityColor(score) {
+    if (score >= 80) return '#28a745'; // Green for excellent
+    if (score >= 60) return '#ffc107'; // Yellow for good
+    if (score >= 40) return '#fd7e14'; // Orange for fair
+    return '#dc3545'; // Red for needs improvement
 }
 
 // Handle file upload
@@ -73,6 +163,11 @@ videoUpload.addEventListener('change', function(event) {
 videoPlayer.addEventListener('play', function() {
     if (!isAnalyzing) {
         isAnalyzing = true;
+        // Reset scoring when starting analysis
+        frameCount = 0;
+        totalSimilarity = 0;
+        currentAverageScore = 0;
+        updateSimilarityDisplay();
         detectPose();
     }
 });
