@@ -322,7 +322,6 @@
     <!-- Smooth scrolling script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, setting up event listeners');
 
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -344,13 +343,12 @@
 
             // Payment modal functionality
             function openPaymentModal(plan, price) {
-                console.log('Opening payment modal for:', plan, price);
                 const modal = document.getElementById('paymentModal');
                 const planName = document.getElementById('selectedPlan');
                 const planPrice = document.getElementById('selectedPrice');
                 const finalPrice = document.getElementById('finalPrice');
 
-                console.log('Modal element:', modal);
+                if (!modal) return;
 
                 // Capitalize plan name
                 const capitalizedPlan = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
@@ -359,30 +357,63 @@
                 planPrice.textContent = `$${price}/month`;
                 finalPrice.textContent = `$${price}/month`;
 
+                // Show modal with smoother animation
                 modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
-                console.log('Modal should now be visible');
+                modal.style.opacity = '0';
+
+                requestAnimationFrame(() => {
+                    modal.style.opacity = '1';
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.paddingRight = getScrollbarWidth() + 'px';
+                });
             }
 
             function closePaymentModal() {
                 const modal = document.getElementById('paymentModal');
-                modal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+                if (!modal) return;
+
+                // Smooth close animation
+                modal.style.opacity = '0';
+
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }, 200);
+            }
+
+            // Get scrollbar width to prevent layout shift
+            function getScrollbarWidth() {
+                const outer = document.createElement('div');
+                outer.style.visibility = 'hidden';
+                outer.style.overflow = 'scroll';
+                outer.style.msOverflowStyle = 'scrollbar';
+                document.body.appendChild(outer);
+
+                const inner = document.createElement('div');
+                outer.appendChild(inner);
+
+                const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+                outer.parentNode.removeChild(outer);
+
+                return scrollbarWidth;
             }
 
             // Add event listeners to Buy Now buttons
             const planButtons = document.querySelectorAll('.plan-button');
-            console.log('Found plan buttons:', planButtons.length);
 
             planButtons.forEach(button => {
                 button.addEventListener('click', function(e) {
                     e.preventDefault();
-                    console.log('Buy Now button clicked');
+                    e.stopPropagation();
+
                     const plan = this.getAttribute('data-plan');
                     const price = this.getAttribute('data-price');
-                    console.log('Plan:', plan, 'Price:', price);
-                    openPaymentModal(plan, price);
-                });
+
+                    if (plan && price) {
+                        openPaymentModal(plan, price);
+                    }
+                }, { passive: false });
             });
 
             // Close modal when clicking outside
@@ -394,6 +425,16 @@
                     }
                 });
             }
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    const modal = document.getElementById('paymentModal');
+                    if (modal && modal.style.display === 'flex') {
+                        closePaymentModal();
+                    }
+                }
+            });
 
             // Handle form submission
             const checkoutForm = document.getElementById('checkoutForm');
