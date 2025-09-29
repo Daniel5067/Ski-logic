@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Image Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .hero-test {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            display: block;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        .status {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .checklist {
+            text-align: left;
+            max-width: 500px;
+            margin: 20px auto;
+        }
+        .checklist li {
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hero Image Test</h1>
+        <p>This page tests if your <code>hero-ski-analysis.jpg</code> image is working correctly.</p>
+
+        <div id="status" class="status error">
+            <strong>❌ Image not found</strong><br>
+            Please add <code>hero-ski-analysis.jpg</code> to the <code>showcase/</code> folder
+        </div>
+
+        <img src="showcase/hero-ski-analysis.jpg" alt="Hero ski analysis test" class="hero-test" id="heroImage" style="display: none;">
+
+        <h3>Image Requirements Checklist:</h3>
+        <ul class="checklist">
+            <li>✅ Skier in dynamic action pose</li>
+            <li>✅ Bright cyan AI pose detection dots on joints</li>
+            <li>✅ Connected skeleton lines between poses</li>
+            <li>✅ Coaching text annotations ("Good form", etc.)</li>
+            <li>✅ Professional mountain background</li>
+            <li>✅ 1200x800px dimensions (3:2 ratio)</li>
+            <li>✅ File named exactly "hero-ski-analysis.jpg"</li>
+            <li>✅ Optimized for web (under 500KB)</li>
+        </ul>
+
+        <h3>Next Steps:</h3>
+        <ol>
+            <li>Create the image using the guide in <code>IMAGE-CREATION-GUIDE.md</code></li>
+            <li>Save it as <code>showcase/hero-ski-analysis.jpg</code></li>
+            <li>Refresh this page to test</li>
+            <li>Once working, push to GitHub to update your live site</li>
+        </ol>
+    </div>
+
+    <script>
+        const image = document.getElementById('heroImage');
+        const status = document.getElementById('status');
+
+        image.onload = function() {
+            status.className = 'status success';
+            status.innerHTML = '<strong>✅ Image loaded successfully!</strong><br>Your hero image is ready for the website';
+            image.style.display = 'block';
+        };
+
+        image.onerror = function() {
+            status.className = 'status error';
+            status.innerHTML = '<strong>❌ Image not found</strong><br>Please add <code>hero-ski-analysis.jpg</code> to the <code>showcase/</code> folder';
+        };
+
+        // Try to load the image
+        image.src = 'showcase/hero-ski-analysis.jpg?' + Date.now();
+    </script>
+</body>
+</html>
