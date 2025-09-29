@@ -321,102 +321,135 @@
 
     <!-- Smooth scrolling script -->
     <script>
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, setting up event listeners');
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 });
             });
-        });
 
-        // CTA button functionality
-        document.querySelector('.cta-button').addEventListener('click', function() {
-            alert('Thank you for your interest! Early access signups coming soon.');
-        });
+            // CTA button functionality
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                ctaButton.addEventListener('click', function() {
+                    alert('Thank you for your interest! Early access signups coming soon.');
+                });
+            }
 
-        // Payment modal functionality
-        function openPaymentModal(plan, price) {
-            const modal = document.getElementById('paymentModal');
-            const planName = document.getElementById('selectedPlan');
-            const planPrice = document.getElementById('selectedPrice');
-            const finalPrice = document.getElementById('finalPrice');
+            // Payment modal functionality
+            function openPaymentModal(plan, price) {
+                console.log('Opening payment modal for:', plan, price);
+                const modal = document.getElementById('paymentModal');
+                const planName = document.getElementById('selectedPlan');
+                const planPrice = document.getElementById('selectedPrice');
+                const finalPrice = document.getElementById('finalPrice');
 
-            // Capitalize plan name
-            const capitalizedPlan = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
+                console.log('Modal element:', modal);
 
-            planName.textContent = capitalizedPlan;
-            planPrice.textContent = `$${price}/month`;
-            finalPrice.textContent = `$${price}/month`;
+                // Capitalize plan name
+                const capitalizedPlan = plan.charAt(0).toUpperCase() + plan.slice(1) + ' Plan';
 
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
+                planName.textContent = capitalizedPlan;
+                planPrice.textContent = `$${price}/month`;
+                finalPrice.textContent = `$${price}/month`;
 
-        function closePaymentModal() {
-            const modal = document.getElementById('paymentModal');
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+                console.log('Modal should now be visible');
+            }
 
-        // Add event listeners to Buy Now buttons
-        document.querySelectorAll('.plan-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const plan = this.getAttribute('data-plan');
-                const price = this.getAttribute('data-price');
-                openPaymentModal(plan, price);
+            function closePaymentModal() {
+                const modal = document.getElementById('paymentModal');
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            // Add event listeners to Buy Now buttons
+            const planButtons = document.querySelectorAll('.plan-button');
+            console.log('Found plan buttons:', planButtons.length);
+
+            planButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Buy Now button clicked');
+                    const plan = this.getAttribute('data-plan');
+                    const price = this.getAttribute('data-price');
+                    console.log('Plan:', plan, 'Price:', price);
+                    openPaymentModal(plan, price);
+                });
             });
-        });
 
-        // Close modal when clicking outside
-        document.getElementById('paymentModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closePaymentModal();
+            // Close modal when clicking outside
+            const paymentModal = document.getElementById('paymentModal');
+            if (paymentModal) {
+                paymentModal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closePaymentModal();
+                    }
+                });
             }
-        });
 
-        // Handle form submission
-        document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-            e.preventDefault();
+            // Handle form submission
+            const checkoutForm = document.getElementById('checkoutForm');
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
 
-            // Simulate payment processing
-            const submitButton = document.querySelector('.submit-payment');
-            const originalText = submitButton.innerHTML;
+                    // Simulate payment processing
+                    const submitButton = document.querySelector('.submit-payment');
+                    const originalText = submitButton.innerHTML;
 
-            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
-            submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    submitButton.disabled = true;
 
-            setTimeout(() => {
-                alert('Payment successful! Welcome to Slope Logic. Check your email for account details.');
-                closePaymentModal();
-                submitButton.innerHTML = originalText;
-                submitButton.disabled = false;
-                document.getElementById('checkoutForm').reset();
-            }, 2000);
-        });
-
-        // Format card number input
-        document.getElementById('cardNumber').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
-            let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-            if (formattedValue.length > 19) formattedValue = formattedValue.slice(0, 19);
-            e.target.value = formattedValue;
-        });
-
-        // Format expiry input
-        document.getElementById('expiry').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length >= 2) {
-                value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                    setTimeout(() => {
+                        alert('Payment successful! Welcome to Slope Logic. Check your email for account details.');
+                        closePaymentModal();
+                        submitButton.innerHTML = originalText;
+                        submitButton.disabled = false;
+                        checkoutForm.reset();
+                    }, 2000);
+                });
             }
-            e.target.value = value;
-        });
 
-        // Format CVV input
-        document.getElementById('cvv').addEventListener('input', function(e) {
-            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
-        });
+            // Format card number input
+            const cardNumber = document.getElementById('cardNumber');
+            if (cardNumber) {
+                cardNumber.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
+                    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
+                    if (formattedValue.length > 19) formattedValue = formattedValue.slice(0, 19);
+                    e.target.value = formattedValue;
+                });
+            }
+
+            // Format expiry input
+            const expiry = document.getElementById('expiry');
+            if (expiry) {
+                expiry.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            // Format CVV input
+            const cvv = document.getElementById('cvv');
+            if (cvv) {
+                cvv.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+                });
+            }
+
+        }); // End of DOMContentLoaded
     </script>
 </body>
 </html>
