@@ -4,6 +4,12 @@ const canvasElement = document.getElementById('output_canvas');
 const canvasCtx = canvasElement.getContext('2d');
 const feedbackElement = document.getElementById("feedback");
 const statusElement = document.getElementById("status");
+const videoUploadElement = document.getElementById("videoUpload");
+const statusBarElement = document.getElementById("statusBar");
+
+// Video upload elements
+let uploadedVideo = null;
+let isAnalyzingVideo = false;
 
 // MediaPipe pose landmark indices (for clarity)
 const POSE_LANDMARKS = {
@@ -110,6 +116,68 @@ function calculateAngle(a, b, c) {
   }
 }
 
+// Video upload handling
+function handleVideoUpload(event) {
+  const file = event.target.files[0];
+  if (file && file.type.startsWith('video/')) {
+    // Create video element for uploaded video
+    if (uploadedVideo) {
+      uploadedVideo.remove();
+    }
+
+    uploadedVideo = document.createElement('video');
+    uploadedVideo.controls = true;
+    uploadedVideo.style.display = 'block';
+    uploadedVideo.style.margin = '1em auto';
+    uploadedVideo.style.maxWidth = '100%';
+
+    // Add video to page
+    const liveView = document.getElementById('liveView');
+    liveView.insertBefore(uploadedVideo, liveView.firstChild);
+
+    // Set video source
+    uploadedVideo.src = URL.createObjectURL(file);
+
+    // Update status bar
+    statusBarElement.textContent = "Status: Video loaded. Press play to begin.";
+
+    // Add event listeners for video events
+    uploadedVideo.addEventListener('play', () => {
+      statusBarElement.textContent = "Status: Analyzing...";
+      isAnalyzingVideo = true;
+      startVideoAnalysis();
+    });
+
+    uploadedVideo.addEventListener('pause', () => {
+      statusBarElement.textContent = "Status: Paused.";
+      isAnalyzingVideo = false;
+    });
+
+    uploadedVideo.addEventListener('ended', () => {
+      statusBarElement.textContent = "Status: Paused.";
+      isAnalyzingVideo = false;
+    });
+  }
+}
+
+// Analyze uploaded video frames
+function startVideoAnalysis() {
+  if (!uploadedVideo || !pose || !isAnalyzingVideo) return;
+
+  const analyzeFrame = async () => {
+    if (uploadedVideo && !uploadedVideo.paused && !uploadedVideo.ended && isAnalyzingVideo) {
+      try {
+        await pose.send({image: uploadedVideo});
+      } catch (error) {
+        console.error("Error analyzing video frame:", error);
+      }
+      requestAnimationFrame(analyzeFrame);
+    }
+  };
+
+  analyzeFrame();
+}
+
 // This main function runs every time the AI sees a person
 function onResults(results) {
   try {
@@ -120,15 +188,18 @@ function onResults(results) {
     }
     lastFrameTime = currentTime;
 
+    // Determine which video source to use
+    const activeVideo = isAnalyzingVideo && uploadedVideo ? uploadedVideo : video;
+
     // Ensure we have valid video dimensions
-    if (!video.videoWidth || !video.videoHeight) {
+    if (!activeVideo.videoWidth || !activeVideo.videoHeight) {
       return;
     }
 
-    // Make the drawing canvas the same size as the video
-    if (canvasElement.width !== video.videoWidth || canvasElement.height !== video.videoHeight) {
-      canvasElement.width = video.videoWidth;
-      canvasElement.height = video.videoHeight;
+    // Make the drawing canvas the same size as the active video
+    if (canvasElement.width !== activeVideo.videoWidth || canvasElement.height !== activeVideo.videoHeight) {
+      canvasElement.width = activeVideo.videoWidth;
+      canvasElement.height = activeVideo.videoHeight;
     }
 
     // Clear the canvas and draw the video frame onto it
@@ -269,6 +340,9 @@ function cleanup() {
 
 // Handle page unload
 window.addEventListener('beforeunload', cleanup);
+
+// Add video upload event listener
+videoUploadElement.addEventListener('change', handleVideoUpload);
 
 // Start the application when page loads
 if (document.readyState === 'loading') {
