@@ -8,6 +8,9 @@ const videoPlayer = document.getElementById('videoPlayer');
 const poseCanvas = document.getElementById('poseCanvas');
 const canvasCtx = poseCanvas.getContext('2d');
 const similarityScoreElement = document.getElementById('similarity-score');
+const toggleAnalyticsBtn = document.getElementById('toggle-analytics-btn');
+const analyticsPanel = document.getElementById('analytics-panel');
+const separationValueElement = document.getElementById('separation-value');
 
 // Initialize MediaPipe Pose
 let pose;
@@ -78,6 +81,46 @@ function calculatePoseSimilarity(userPose, proPose) {
     return similarity;
 }
 
+// Calculate upper/lower body separation angle
+function calculateSeparation(landmarks) {
+    if (!landmarks || landmarks.length < 33) {
+        return 0;
+    }
+
+    // Get shoulder and hip landmarks
+    const leftShoulder = landmarks[11];   // Left shoulder
+    const rightShoulder = landmarks[12];  // Right shoulder
+    const leftHip = landmarks[23];        // Left hip
+    const rightHip = landmarks[24];       // Right hip
+
+    // Check if all required landmarks are visible
+    if (!leftShoulder || !rightShoulder || !leftHip || !rightHip ||
+        leftShoulder.visibility < 0.5 || rightShoulder.visibility < 0.5 ||
+        leftHip.visibility < 0.5 || rightHip.visibility < 0.5) {
+        return 0;
+    }
+
+    // Calculate angle of shoulder line
+    const shoulderDx = rightShoulder.x - leftShoulder.x;
+    const shoulderDy = rightShoulder.y - leftShoulder.y;
+    const shoulderAngle = Math.atan2(shoulderDy, shoulderDx) * (180 / Math.PI);
+
+    // Calculate angle of hip line
+    const hipDx = rightHip.x - leftHip.x;
+    const hipDy = rightHip.y - leftHip.y;
+    const hipAngle = Math.atan2(hipDy, hipDx) * (180 / Math.PI);
+
+    // Calculate absolute difference between the two angles
+    let separation = Math.abs(shoulderAngle - hipAngle);
+
+    // Normalize angle to be between 0 and 180 degrees
+    if (separation > 180) {
+        separation = 360 - separation;
+    }
+
+    return separation;
+}
+
 // Handle pose detection results
 function onPoseResults(results) {
     // Clear the canvas
@@ -100,6 +143,10 @@ function onPoseResults(results) {
             radius: 6
         });
 
+        // Calculate and display upper/lower body separation
+        const separation = calculateSeparation(results.poseLandmarks);
+        separationValueElement.textContent = Math.round(separation);
+
         // Compare with pro model and update similarity score
         if (isAnalyzing) {
             compareWithProModel(results.poseLandmarks);
@@ -107,6 +154,7 @@ function onPoseResults(results) {
     } else {
         // Clear stored landmarks if no pose detected
         currentPoseLandmarks = null;
+        separationValueElement.textContent = '--';
     }
 }
 
@@ -225,6 +273,17 @@ window.addEventListener('keydown', function(event) {
         } else {
             console.log('Data capture: No pose landmarks detected in current frame');
         }
+    }
+});
+
+// Toggle analytics panel functionality
+toggleAnalyticsBtn.addEventListener('click', function() {
+    if (analyticsPanel.classList.contains('hidden')) {
+        analyticsPanel.classList.remove('hidden');
+        toggleAnalyticsBtn.textContent = 'Hide Advanced Analytics';
+    } else {
+        analyticsPanel.classList.add('hidden');
+        toggleAnalyticsBtn.textContent = 'Show Advanced Analytics';
     }
 });
 
