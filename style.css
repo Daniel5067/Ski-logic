@@ -102,6 +102,62 @@ p {
     transition: all 0.3s ease;
 }
 
+/* Zoom Control */
+.zoom-control {
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.zoom-control label {
+    font-weight: 500;
+    color: #495057;
+    margin: 0;
+}
+
+#zoom-slider {
+    width: 120px;
+    height: 6px;
+    border-radius: 3px;
+    background: #dee2e6;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+#zoom-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#zoom-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #007bff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#zoom-value {
+    font-weight: bold;
+    color: #007bff;
+    min-width: 35px;
+    text-align: center;
+}
+
 /* Advanced Analytics Toggle Button */
 .analytics-toggle-btn {
     margin-top: 15px;

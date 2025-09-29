@@ -11,6 +11,8 @@ const similarityScoreElement = document.getElementById('similarity-score');
 const toggleAnalyticsBtn = document.getElementById('toggle-analytics-btn');
 const analyticsPanel = document.getElementById('analytics-panel');
 const separationValueElement = document.getElementById('separation-value');
+const zoomSlider = document.getElementById('zoom-slider');
+const zoomValueElement = document.getElementById('zoom-value');
 
 // Initialize MediaPipe Pose
 let pose;
@@ -20,6 +22,11 @@ let isAnalyzing = false;
 let frameCount = 0;
 let totalSimilarity = 0;
 let currentAverageScore = 0;
+
+// Zoom and tracking variables
+let zoomLevel = 1.0;
+let skierCenterX = 0.5; // Default to center of video
+let skierCenterY = 0.5;
 
 // Initialize pose detection when page loads
 function initializePose() {
@@ -121,15 +128,78 @@ function calculateSeparation(landmarks) {
     return separation;
 }
 
+// Calculate the center point of the detected skier
+function calculateSkierCenter(landmarks) {
+    if (!landmarks || landmarks.length === 0) {
+        return { x: skierCenterX, y: skierCenterY }; // Return previous center if no landmarks
+    }
+
+    let totalX = 0;
+    let totalY = 0;
+    let visibleLandmarks = 0;
+
+    // Calculate average position of all visible landmarks
+    for (let i = 0; i < landmarks.length; i++) {
+        const landmark = landmarks[i];
+        if (landmark.visibility > 0.5) {
+            totalX += landmark.x;
+            totalY += landmark.y;
+            visibleLandmarks++;
+        }
+    }
+
+    if (visibleLandmarks === 0) {
+        return { x: skierCenterX, y: skierCenterY }; // Return previous center if no visible landmarks
+    }
+
+    return {
+        x: totalX / visibleLandmarks,
+        y: totalY / visibleLandmarks
+    };
+}
+
+// Draw cropped and zoomed video frame
+function drawZoomedVideo(results) {
+    if (!results.image) return;
+
+    const videoWidth = videoPlayer.videoWidth;
+    const videoHeight = videoPlayer.videoHeight;
+
+    if (!videoWidth || !videoHeight) return;
+
+    // Calculate crop dimensions based on zoom level
+    const cropWidth = videoWidth / zoomLevel;
+    const cropHeight = videoHeight / zoomLevel;
+
+    // Calculate crop position centered on skier
+    const cropX = Math.max(0, Math.min(videoWidth - cropWidth, (skierCenterX * videoWidth) - (cropWidth / 2)));
+    const cropY = Math.max(0, Math.min(videoHeight - cropHeight, (skierCenterY * videoHeight) - (cropHeight / 2)));
+
+    // Draw the cropped and zoomed section
+    canvasCtx.drawImage(
+        results.image,
+        cropX, cropY, cropWidth, cropHeight,  // Source crop area
+        0, 0, poseCanvas.width, poseCanvas.height  // Destination (fill entire canvas)
+    );
+}
+
 // Handle pose detection results
 function onPoseResults(results) {
     // Clear the canvas
     canvasCtx.clearRect(0, 0, poseCanvas.width, poseCanvas.height);
 
+    // Draw the zoomed video frame
+    drawZoomedVideo(results);
+
     // Draw pose landmarks if detected
     if (results.poseLandmarks) {
         // Store current pose landmarks for data capture
         currentPoseLandmarks = results.poseLandmarks;
+
+        // Update skier center for tracking
+        const center = calculateSkierCenter(results.poseLandmarks);
+        skierCenterX = center.x;
+        skierCenterY = center.y;
 
         // Draw pose connections (skeleton)
         drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
@@ -285,6 +355,12 @@ toggleAnalyticsBtn.addEventListener('click', function() {
         analyticsPanel.classList.add('hidden');
         toggleAnalyticsBtn.textContent = 'Show Advanced Analytics';
     }
+});
+
+// Zoom slider functionality
+zoomSlider.addEventListener('input', function() {
+    zoomLevel = parseFloat(zoomSlider.value);
+    zoomValueElement.textContent = zoomLevel.toFixed(1) + 'x';
 });
 
 // Initialize pose detection when page loads
