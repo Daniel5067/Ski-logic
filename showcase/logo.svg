@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 80" width="380" height="80">
   <defs>
     <!-- Futuristic mountain gradient -->
     <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -30,8 +30,8 @@
   <line x1="10" y1="35" x2="70" y2="35" stroke="#00D4FF" stroke-width="0.5" opacity="0.3"/>
 
   <!-- Company name with modern font -->
-  <text x="90" y="35" font-family="'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="300" fill="url(#textGradient)" letter-spacing="1px">SLOPE LOGIC</text>
+  <text x="90" y="38" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="400" fill="url(#textGradient)" letter-spacing="1px">SLOPE LOGIC</text>
 
   <!-- Tagline -->
-  <text x="90" y="50" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="300" fill="#00A8CC" opacity="0.8" letter-spacing="0.5px">AI-POWERED SKI ANALYSIS</text>
+  <text x="90" y="55" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="300" fill="#00A8CC" opacity="0.8" letter-spacing="0.5px">AI-POWERED SKI ANALYSIS</text>
 </svg>
