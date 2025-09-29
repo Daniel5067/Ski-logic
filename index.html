@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Ski Coach</title>
+    <title>Video Pose Analysis</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>AI Ski Coach</h1>
-        <p>Upload your ski video to analyze your technique</p>
+        <h1>Video Pose Analysis</h1>
+        <p>Upload a video to analyze pose detection</p>
 
         <!-- File upload input - always visible -->
         <div class="upload-section">
@@ -25,27 +25,6 @@
                 </video>
                 <canvas id="poseCanvas" class="pose-overlay"></canvas>
             </div>
-
-            <!-- Pro Similarity Score Display -->
-            <h2 id="similarity-score">Pro Similarity Score: --%</h2>
-
-            <!-- Zoom Control -->
-            <div class="zoom-control">
-                <label for="zoom-slider">Digital Zoom:</label>
-                <input type="range" id="zoom-slider" min="1" max="3" step="0.1" value="1">
-                <span id="zoom-value">1.0x</span>
-            </div>
-
-            <!-- Advanced Analytics Toggle Button -->
-            <button id="toggle-analytics-btn" class="analytics-toggle-btn">Show Advanced Analytics</button>
-
-            <!-- Advanced Analytics Panel (Hidden by default) -->
-            <div id="analytics-panel" class="analytics-panel hidden">
-                <h3>Advanced Analytics</h3>
-                <div class="metric">
-                    <p>Upper/Lower Body Separation: <span id="separation-value">--</span> degrees</p>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -53,10 +32,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 
-    <!-- Pro model data -->
-    <script type="module" src="pro_model.js"></script>
-
     <!-- Our main script -->
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

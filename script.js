@@ -1,32 +1,13 @@
-// Import pro model data
-import { proTurnData } from './pro_model.js';
-
 // Get HTML elements
 const videoUpload = document.getElementById('videoUpload');
 const videoContainer = document.getElementById('videoContainer');
 const videoPlayer = document.getElementById('videoPlayer');
 const poseCanvas = document.getElementById('poseCanvas');
 const canvasCtx = poseCanvas.getContext('2d');
-const similarityScoreElement = document.getElementById('similarity-score');
-const toggleAnalyticsBtn = document.getElementById('toggle-analytics-btn');
-const analyticsPanel = document.getElementById('analytics-panel');
-const separationValueElement = document.getElementById('separation-value');
-const zoomSlider = document.getElementById('zoom-slider');
-const zoomValueElement = document.getElementById('zoom-value');
 
 // Initialize MediaPipe Pose
 let pose;
 let isAnalyzing = false;
-
-// Similarity scoring variables
-let frameCount = 0;
-let totalSimilarity = 0;
-let currentAverageScore = 0;
-
-// Zoom and tracking variables
-let zoomLevel = 1.0;
-let skierCenterX = 0.5; // Default to center of video
-let skierCenterY = 0.5;
 
 // Initialize pose detection when page loads
 function initializePose() {
@@ -37,150 +18,14 @@ function initializePose() {
     });
 
     pose.setOptions({
-        modelComplexity: 2,
+        modelComplexity: 1,
         smoothLandmarks: true,
         enableSegmentation: false,
-        minDetectionConfidence: 0.7,
-        minTrackingConfidence: 0.7
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
     });
 
     pose.onResults(onPoseResults);
-}
-
-// Calculate pose similarity between user and pro poses
-function calculatePoseSimilarity(userPose, proPose) {
-    if (!userPose || !proPose || userPose.length !== proPose.length) {
-        return 0;
-    }
-
-    let totalDistance = 0;
-    let validLandmarks = 0;
-
-    // Compare each landmark point
-    for (let i = 0; i < userPose.length; i++) {
-        const userPoint = userPose[i];
-        const proPoint = proPose[i];
-
-        // Only compare landmarks that are visible in both poses
-        if (userPoint.visibility > 0.5 && proPoint.visibility > 0.5) {
-            // Calculate Euclidean distance between corresponding landmarks
-            const dx = userPoint.x - proPoint.x;
-            const dy = userPoint.y - proPoint.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-
-            totalDistance += distance;
-            validLandmarks++;
-        }
-    }
-
-    if (validLandmarks === 0) {
-        return 0;
-    }
-
-    // Calculate average distance
-    const averageDistance = totalDistance / validLandmarks;
-
-    // Convert distance to similarity percentage (0-100%)
-    // Assuming max meaningful distance is around 0.5 (half the screen)
-    const maxDistance = 0.5;
-    const similarity = Math.max(0, (1 - (averageDistance / maxDistance)) * 100);
-
-    return similarity;
-}
-
-// Calculate upper/lower body separation angle
-function calculateSeparation(landmarks) {
-    if (!landmarks || landmarks.length < 33) {
-        return 0;
-    }
-
-    // Get shoulder and hip landmarks
-    const leftShoulder = landmarks[11];   // Left shoulder
-    const rightShoulder = landmarks[12];  // Right shoulder
-    const leftHip = landmarks[23];        // Left hip
-    const rightHip = landmarks[24];       // Right hip
-
-    // Check if all required landmarks are visible
-    if (!leftShoulder || !rightShoulder || !leftHip || !rightHip ||
-        leftShoulder.visibility < 0.5 || rightShoulder.visibility < 0.5 ||
-        leftHip.visibility < 0.5 || rightHip.visibility < 0.5) {
-        return 0;
-    }
-
-    // Calculate angle of shoulder line
-    const shoulderDx = rightShoulder.x - leftShoulder.x;
-    const shoulderDy = rightShoulder.y - leftShoulder.y;
-    const shoulderAngle = Math.atan2(shoulderDy, shoulderDx) * (180 / Math.PI);
-
-    // Calculate angle of hip line
-    const hipDx = rightHip.x - leftHip.x;
-    const hipDy = rightHip.y - leftHip.y;
-    const hipAngle = Math.atan2(hipDy, hipDx) * (180 / Math.PI);
-
-    // Calculate absolute difference between the two angles
-    let separation = Math.abs(shoulderAngle - hipAngle);
-
-    // Normalize angle to be between 0 and 180 degrees
-    if (separation > 180) {
-        separation = 360 - separation;
-    }
-
-    return separation;
-}
-
-// Calculate the center point of the detected skier
-function calculateSkierCenter(landmarks) {
-    if (!landmarks || landmarks.length === 0) {
-        return { x: skierCenterX, y: skierCenterY }; // Return previous center if no landmarks
-    }
-
-    let totalX = 0;
-    let totalY = 0;
-    let visibleLandmarks = 0;
-
-    // Calculate average position of all visible landmarks
-    for (let i = 0; i < landmarks.length; i++) {
-        const landmark = landmarks[i];
-        if (landmark.visibility > 0.5) {
-            totalX += landmark.x;
-            totalY += landmark.y;
-            visibleLandmarks++;
-        }
-    }
-
-    if (visibleLandmarks === 0) {
-        return { x: skierCenterX, y: skierCenterY }; // Return previous center if no visible landmarks
-    }
-
-    return {
-        x: totalX / visibleLandmarks,
-        y: totalY / visibleLandmarks
-    };
-}
-
-// Draw cropped and zoomed video frame
-function drawZoomedVideo(results) {
-    if (!results.image) return;
-
-    const videoWidth = videoPlayer.videoWidth;
-    const videoHeight = videoPlayer.videoHeight;
-
-    if (!videoWidth || !videoHeight) return;
-
-    // Calculate crop dimensions based on zoom level
-    const cropWidth = videoWidth / zoomLevel;
-    const cropHeight = videoHeight / zoomLevel;
-
-    // Calculate crop position centered on skier
-    const cropX = Math.max(0, Math.min(videoWidth - cropWidth, (skierCenterX * videoWidth) - (cropWidth / 2)));
-    const cropY = Math.max(0, Math.min(videoHeight - cropHeight, (skierCenterY * videoHeight) - (cropHeight / 2)));
-
-    // Draw the cropped and zoomed section
-    canvasCtx.drawImage(
-        results.image,
-        cropX, cropY, cropWidth, cropHeight,  // Source crop area
-        0, 0, poseCanvas.width, poseCanvas.height  // Destination (fill entire canvas)
-    );
 }
 
 // Handle pose detection results
@@ -188,19 +33,13 @@ function onPoseResults(results) {
     // Clear the canvas
     canvasCtx.clearRect(0, 0, poseCanvas.width, poseCanvas.height);
 
-    // Draw the zoomed video frame
-    drawZoomedVideo(results);
+    // Draw the video frame
+    if (results.image) {
+        canvasCtx.drawImage(results.image, 0, 0, poseCanvas.width, poseCanvas.height);
+    }
 
     // Draw pose landmarks if detected
     if (results.poseLandmarks) {
-        // Store current pose landmarks for data capture
-        currentPoseLandmarks = results.poseLandmarks;
-
-        // Update skier center for tracking
-        const center = calculateSkierCenter(results.poseLandmarks);
-        skierCenterX = center.x;
-        skierCenterY = center.y;
-
         // Draw pose connections (skeleton)
         drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
             color: '#00FF00',
@@ -212,55 +51,7 @@ function onPoseResults(results) {
             color: '#FF0000',
             radius: 6
         });
-
-        // Calculate and display upper/lower body separation
-        const separation = calculateSeparation(results.poseLandmarks);
-        separationValueElement.textContent = Math.round(separation);
-
-        // Compare with pro model and update similarity score
-        if (isAnalyzing) {
-            compareWithProModel(results.poseLandmarks);
-        }
-    } else {
-        // Clear stored landmarks if no pose detected
-        currentPoseLandmarks = null;
-        separationValueElement.textContent = '--';
     }
-}
-
-// Compare current pose with pro model and update similarity score
-function compareWithProModel(userPose) {
-    // Get corresponding pro pose frame (cycle through pro data)
-    const proFrameIndex = frameCount % proTurnData.length;
-    const proPose = proTurnData[proFrameIndex];
-
-    // Calculate similarity for current frame
-    const frameSimilarity = calculatePoseSimilarity(userPose, proPose);
-
-    // Update running totals
-    frameCount++;
-    totalSimilarity += frameSimilarity;
-    currentAverageScore = totalSimilarity / frameCount;
-
-    // Update the display
-    updateSimilarityDisplay();
-}
-
-// Update the similarity score display
-function updateSimilarityDisplay() {
-    const scoreText = `Pro Similarity Score: ${Math.round(currentAverageScore)}%`;
-    similarityScoreElement.textContent = scoreText;
-
-    // Add color coding based on score
-    similarityScoreElement.style.color = getSimilarityColor(currentAverageScore);
-}
-
-// Get color based on similarity score
-function getSimilarityColor(score) {
-    if (score >= 80) return '#28a745'; // Green for excellent
-    if (score >= 60) return '#ffc107'; // Yellow for good
-    if (score >= 40) return '#fd7e14'; // Orange for fair
-    return '#dc3545'; // Red for needs improvement
 }
 
 // Handle file upload
@@ -287,11 +78,6 @@ videoUpload.addEventListener('change', function(event) {
 videoPlayer.addEventListener('play', function() {
     if (!isAnalyzing) {
         isAnalyzing = true;
-        // Reset scoring when starting analysis
-        frameCount = 0;
-        totalSimilarity = 0;
-        currentAverageScore = 0;
-        updateSimilarityDisplay();
         detectPose();
     }
 });
@@ -320,47 +106,6 @@ async function detectPose() {
 videoPlayer.addEventListener('resize', function() {
     poseCanvas.width = videoPlayer.videoWidth;
     poseCanvas.height = videoPlayer.videoHeight;
-});
-
-// Data capture feature - press 'p' to capture current pose landmarks
-let currentPoseLandmarks = null;
-
-window.addEventListener('keydown', function(event) {
-    // Check if 'p' key is pressed and video is playing
-    if (event.key === 'p' || event.key === 'P') {
-        if (isAnalyzing && currentPoseLandmarks) {
-            console.log('Captured Pose Landmarks:', JSON.stringify(currentPoseLandmarks, null, 2));
-            console.log('Raw Pose Landmarks Array:', currentPoseLandmarks);
-
-            // Also show a brief visual confirmation
-            const originalColor = similarityScoreElement.style.backgroundColor;
-            similarityScoreElement.style.backgroundColor = '#28a745';
-            setTimeout(() => {
-                similarityScoreElement.style.backgroundColor = originalColor;
-            }, 200);
-        } else if (!isAnalyzing) {
-            console.log('Data capture: Video must be playing to capture pose data');
-        } else {
-            console.log('Data capture: No pose landmarks detected in current frame');
-        }
-    }
-});
-
-// Toggle analytics panel functionality
-toggleAnalyticsBtn.addEventListener('click', function() {
-    if (analyticsPanel.classList.contains('hidden')) {
-        analyticsPanel.classList.remove('hidden');
-        toggleAnalyticsBtn.textContent = 'Hide Advanced Analytics';
-    } else {
-        analyticsPanel.classList.add('hidden');
-        toggleAnalyticsBtn.textContent = 'Show Advanced Analytics';
-    }
-});
-
-// Zoom slider functionality
-zoomSlider.addEventListener('input', function() {
-    zoomLevel = parseFloat(zoomSlider.value);
-    zoomValueElement.textContent = zoomLevel.toFixed(1) + 'x';
 });
 
 // Initialize pose detection when page loads
