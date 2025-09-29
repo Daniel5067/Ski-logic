@@ -1,65 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 120" width="400" height="120">
-  <!-- Gradient definitions -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
   <defs>
-    <!-- Background gradient for logo circle -->
-    <radialGradient id="backgroundGradient" cx="0.3" cy="0.3">
-      <stop offset="0%" stop-color="#E6FFFA"/>
-      <stop offset="100%" stop-color="#B3E5FC"/>
-    </radialGradient>
-
     <!-- Mountain gradient -->
     <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#2D3748"/>
-      <stop offset="70%" stop-color="#4A5568"/>
-      <stop offset="100%" stop-color="#1A202C"/>
+      <stop offset="0%" stop-color="#4A90E2"/>
+      <stop offset="70%" stop-color="#2C5AA0"/>
+      <stop offset="100%" stop-color="#1A365D"/>
     </linearGradient>
 
-    <!-- Slope/trail gradient -->
-    <linearGradient id="slopeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00D4FF"/>
-      <stop offset="50%" stop-color="#0099CC"/>
-      <stop offset="100%" stop-color="#006699"/>
-    </linearGradient>
-
-    <!-- Text gradient for "Slope" -->
+    <!-- Text gradient -->
     <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#1E3A8A"/>
-      <stop offset="100%" stop-color="#3B82F6"/>
+      <stop offset="0%" stop-color="#2C5AA0"/>
+      <stop offset="100%" stop-color="#4A90E2"/>
     </linearGradient>
-
-    <!-- Digital grid overlay -->
-    <pattern id="grid" width="8" height="8" patternUnits="userSpaceOnUse">
-      <path d="M 8 0 L 0 0 0 8" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
-    </pattern>
   </defs>
 
-  <!-- Background circle for the logo mark -->
-  <circle cx="60" cy="60" r="45" fill="url(#backgroundGradient)" stroke="none"/>
+  <!-- Simple Alps mountain silhouette -->
+  <path d="M10 50 L25 25 L35 35 L45 20 L55 30 L70 50 Z" fill="url(#mountainGradient)"/>
 
-  <!-- Mountain silhouette -->
-  <path d="M20 75 L35 45 L50 55 L65 35 L80 50 L100 75 Z" fill="url(#mountainGradient)" opacity="0.9"/>
-
-  <!-- Ski slope/trail -->
-  <path d="M25 70 Q45 50 65 40 Q85 35 95 45" stroke="url(#slopeGradient)" stroke-width="3" fill="none" opacity="0.8"/>
-
-  <!-- Data points representing AI analysis -->
-  <circle cx="35" cy="55" r="2" fill="#00D4FF"/>
-  <circle cx="50" cy="45" r="2" fill="#00D4FF"/>
-  <circle cx="65" cy="40" r="2" fill="#00D4FF"/>
-  <circle cx="80" cy="45" r="2" fill="#00D4FF"/>
-
-  <!-- Connection lines between data points (AI neural network style) -->
-  <line x1="35" y1="55" x2="50" y2="45" stroke="#00D4FF" stroke-width="1" opacity="0.6"/>
-  <line x1="50" y1="45" x2="65" y2="40" stroke="#00D4FF" stroke-width="1" opacity="0.6"/>
-  <line x1="65" y1="40" x2="80" y2="45" stroke="#00D4FF" stroke-width="1" opacity="0.6"/>
-
-  <!-- Digital grid overlay (subtle AI element) -->
-  <circle cx="60" cy="60" r="42" fill="url(#grid)" opacity="0.3"/>
-
-  <!-- Company name "Slope Logic" -->
-  <text x="130" y="45" font-family="'Segoe UI', Arial, sans-serif" font-size="28" font-weight="700" fill="url(#textGradient)">Slope</text>
-  <text x="130" y="75" font-family="'Segoe UI', Arial, sans-serif" font-size="28" font-weight="300" fill="#4A5568">Logic</text>
+  <!-- Company name -->
+  <text x="90" y="35" font-family="'Segoe UI', Arial, sans-serif" font-size="24" font-weight="700" fill="url(#textGradient)">Slope Logic</text>
 
   <!-- Tagline -->
-  <text x="130" y="95" font-family="'Segoe UI', Arial, sans-serif" font-size="11" font-weight="400" fill="#718096" opacity="0.8">AI-Powered Ski Analysis</text>
+  <text x="90" y="50" font-family="'Segoe UI', Arial, sans-serif" font-size="10" font-weight="400" fill="#666" opacity="0.8">AI-Powered Ski Analysis</text>
 </svg>
