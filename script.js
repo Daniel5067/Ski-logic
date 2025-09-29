@@ -1,52 +1,110 @@
-// --- Get HTML Elements ---
+// Get HTML elements
 const videoUpload = document.getElementById('videoUpload');
-const playerContainer = document.getElementById('playerContainer');
-const resultsVideo = document.getElementById('resultsVideo');
-const resultsCanvas = document.getElementById('resultsCanvas');
+const videoContainer = document.getElementById('videoContainer');
+const videoPlayer = document.getElementById('videoPlayer');
+const poseCanvas = document.getElementById('poseCanvas');
+const canvasCtx = poseCanvas.getContext('2d');
 
-// --- AI Model Setup ---
-const pose = new Pose({
-    locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
-});
-pose.setOptions({
-    modelComplexity: 1,
-    smoothLandmarks: true,
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5
-});
-pose.onResults(onResults);
+// Initialize MediaPipe Pose
+let pose;
+let isAnalyzing = false;
 
-// --- Event Listeners ---
-videoUpload.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        playerContainer.classList.remove('hidden');
-        resultsVideo.src = URL.createObjectURL(file);
-        resultsVideo.load();
-    }
-});
-
-resultsVideo.addEventListener('play', () => {
-    const processVideo = async () => {
-        if (resultsVideo.paused || resultsVideo.ended) {
-            return;
+// Initialize pose detection when page loads
+function initializePose() {
+    pose = new Pose({
+        locateFile: (file) => {
+            return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
         }
-        await pose.send({ image: resultsVideo });
-        requestAnimationFrame(processVideo);
-    };
-    requestAnimationFrame(processVideo);
-});
+    });
 
-// --- Core Function: This is called by the AI after it processes a frame ---
-function onResults(results) {
-    const canvasCtx = resultsCanvas.getContext('2d');
-    resultsCanvas.width = resultsVideo.videoWidth;
-    resultsCanvas.height = resultsVideo.videoHeight;
-    canvasCtx.clearRect(0, 0, resultsCanvas.width, resultsCanvas.height);
+    pose.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        enableSegmentation: false,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+    });
 
+    pose.onResults(onPoseResults);
+}
+
+// Handle pose detection results
+function onPoseResults(results) {
+    // Clear the canvas
+    canvasCtx.clearRect(0, 0, poseCanvas.width, poseCanvas.height);
+
+    // Draw pose landmarks if detected
     if (results.poseLandmarks) {
-        // This draws the full, default skeleton. It's the most reliable option.
-        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
-        drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', radius: 2 });
+        // Draw pose connections (skeleton)
+        drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {
+            color: '#00FF00',
+            lineWidth: 4
+        });
+
+        // Draw pose landmarks (joints)
+        drawLandmarks(canvasCtx, results.poseLandmarks, {
+            color: '#FF0000',
+            radius: 6
+        });
     }
 }
+
+// Handle file upload
+videoUpload.addEventListener('change', function(event) {
+    const file = event.target.files[0];
+
+    if (file && file.type.startsWith('video/')) {
+        // Create object URL for the video file
+        const videoURL = URL.createObjectURL(file);
+
+        // Set video source and show the video container
+        videoPlayer.src = videoURL;
+        videoContainer.classList.remove('hidden');
+
+        // Set up canvas dimensions when video metadata loads
+        videoPlayer.addEventListener('loadedmetadata', function() {
+            poseCanvas.width = videoPlayer.videoWidth;
+            poseCanvas.height = videoPlayer.videoHeight;
+        });
+    }
+});
+
+// Handle video play event
+videoPlayer.addEventListener('play', function() {
+    if (!isAnalyzing) {
+        isAnalyzing = true;
+        detectPose();
+    }
+});
+
+// Handle video pause/end events
+videoPlayer.addEventListener('pause', function() {
+    isAnalyzing = false;
+});
+
+videoPlayer.addEventListener('ended', function() {
+    isAnalyzing = false;
+});
+
+// Continuously detect pose while video is playing
+async function detectPose() {
+    if (isAnalyzing && !videoPlayer.paused && !videoPlayer.ended) {
+        // Send current video frame to MediaPipe
+        await pose.send({ image: videoPlayer });
+
+        // Request next frame
+        requestAnimationFrame(detectPose);
+    }
+}
+
+// Update canvas size when video dimensions change
+videoPlayer.addEventListener('resize', function() {
+    poseCanvas.width = videoPlayer.videoWidth;
+    poseCanvas.height = videoPlayer.videoHeight;
+});
+
+// Initialize pose detection when page loads
+window.addEventListener('load', function() {
+    // Wait a bit for MediaPipe to load
+    setTimeout(initializePose, 1000);
+});

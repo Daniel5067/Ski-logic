@@ -1,21 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>AI Ski Coach</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Ski Coach</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>AI Ski Coach</h1>
-  <p>Upload your ski video. The AI analysis will appear when you press play.</p>
-  <input type="file" id="videoUpload" accept="video/*">
+    <div class="container">
+        <h1>AI Ski Coach</h1>
+        <p>Upload your ski video to analyze your technique</p>
 
-  <div id="playerContainer" class="hidden">
-    <video id="resultsVideo" controls></video>
-    <canvas id="resultsCanvas"></canvas>
-  </div>
+        <!-- File upload input - always visible -->
+        <div class="upload-section">
+            <input type="file" id="videoUpload" accept="video/*">
+            <label for="videoUpload" class="upload-btn">Choose Video File</label>
+        </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script type="module" src="script.js"></script>
+        <!-- Video player container - hidden initially -->
+        <div id="videoContainer" class="video-container hidden">
+            <div class="video-wrapper">
+                <video id="videoPlayer" controls>
+                    Your browser does not support the video tag.
+                </video>
+                <canvas id="poseCanvas" class="pose-overlay"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- MediaPipe Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+
+    <!-- Our main script -->
+    <script src="script.js"></script>
 </body>
 </html>
