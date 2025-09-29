@@ -33,13 +33,10 @@
   </div>
 
   <div id="status">Initializing...</div>
-  <h2 id="feedback">Knee Angle: --</h2>   
-  <div id="liveView">
-    <video id="webcam" class="videoView" autoplay playsinline></video>
-    <canvas id="output_canvas" class="layer"></canvas>
-  </div>
+  <h2 id="feedback">Knee Angle: --</h2>
+
+  <!-- Video analysis area will be created dynamically when video is uploaded -->
   
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous" onload="console.log('Camera utils loaded')" onerror="console.error('Failed to load camera utils')"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous" onload="console.log('Drawing utils loaded')" onerror="console.error('Failed to load drawing utils')"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js" crossorigin="anonymous" onload="console.log('Pose loaded')" onerror="console.error('Failed to load pose')"></script>
 

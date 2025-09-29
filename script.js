@@ -1,7 +1,4 @@
 // Find our HTML elements from the page
-const video = document.getElementById('webcam');
-const canvasElement = document.getElementById('output_canvas');
-const canvasCtx = canvasElement.getContext('2d');
 const feedbackElement = document.getElementById("feedback");
 const statusElement = document.getElementById("status");
 const videoUploadElement = document.getElementById("videoUpload");
@@ -9,6 +6,8 @@ const statusBarElement = document.getElementById("statusBar");
 
 // Video upload elements
 let uploadedVideo = null;
+let canvasElement = null;
+let canvasCtx = null;
 let isAnalyzingVideo = false;
 
 // MediaPipe pose landmark indices (for clarity)
@@ -29,18 +28,17 @@ const FRAME_INTERVAL = 1000 / FRAME_RATE_LIMIT;
 // State management
 let isInitialized = false;
 let pose = null;
-let camera = null;
 
 // Browser compatibility check
 function checkBrowserSupport() {
   const errors = [];
 
-  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-    errors.push("Webcam access not supported");
-  }
-
   if (!HTMLCanvasElement.prototype.getContext) {
     errors.push("Canvas not supported");
+  }
+
+  if (!window.FileReader) {
+    errors.push("File reading not supported");
   }
 
   return errors;
@@ -54,19 +52,17 @@ function waitForMediaPipe() {
 
     const checkForMediaPipe = () => {
       // Check for the actual objects MediaPipe exposes
-      const hasCamera = typeof window.Camera === 'function';
       const hasPose = typeof window.Pose === 'function';
       const hasDrawingUtils = typeof window.drawConnectors === 'function' && typeof window.drawLandmarks === 'function';
       const hasConnections = typeof window.POSE_CONNECTIONS !== 'undefined';
 
-      console.log('MediaPipe check:', { hasCamera, hasPose, hasDrawingUtils, hasConnections });
+      console.log('MediaPipe check:', { hasPose, hasDrawingUtils, hasConnections });
 
-      if (hasCamera && hasPose && hasDrawingUtils && hasConnections) {
-        console.log('All MediaPipe libraries loaded successfully');
+      if (hasPose && hasDrawingUtils && hasConnections) {
+        console.log('All required MediaPipe libraries loaded successfully');
         resolve();
       } else if (attempts >= maxAttempts) {
         const missing = [];
-        if (!hasCamera) missing.push('Camera');
         if (!hasPose) missing.push('Pose');
         if (!hasDrawingUtils) missing.push('Drawing utilities');
         if (!hasConnections) missing.push('Pose connections');
@@ -120,20 +116,43 @@ function calculateAngle(a, b, c) {
 function handleVideoUpload(event) {
   const file = event.target.files[0];
   if (file && file.type.startsWith('video/')) {
-    // Create video element for uploaded video
+    // Clean up previous video if exists
     if (uploadedVideo) {
       uploadedVideo.remove();
     }
+    if (canvasElement) {
+      canvasElement.remove();
+    }
 
+    // Create video container
+    const videoContainer = document.createElement('div');
+    videoContainer.style.position = 'relative';
+    videoContainer.style.display = 'inline-block';
+    videoContainer.style.margin = '1em auto';
+    videoContainer.style.border = '1px solid #555';
+
+    // Create video element for uploaded video
     uploadedVideo = document.createElement('video');
     uploadedVideo.controls = true;
     uploadedVideo.style.display = 'block';
-    uploadedVideo.style.margin = '1em auto';
-    uploadedVideo.style.maxWidth = '100%';
+    uploadedVideo.style.width = '100%';
+    uploadedVideo.style.height = 'auto';
+    uploadedVideo.style.maxWidth = '640px';
 
-    // Add video to page
-    const liveView = document.getElementById('liveView');
-    liveView.insertBefore(uploadedVideo, liveView.firstChild);
+    // Create canvas for pose overlay
+    canvasElement = document.createElement('canvas');
+    canvasElement.style.position = 'absolute';
+    canvasElement.style.top = '0';
+    canvasElement.style.left = '0';
+    canvasElement.style.pointerEvents = 'none';
+    canvasCtx = canvasElement.getContext('2d');
+
+    // Add elements to container
+    videoContainer.appendChild(uploadedVideo);
+    videoContainer.appendChild(canvasElement);
+
+    // Add container to page (after feedback element)
+    feedbackElement.parentNode.insertBefore(videoContainer, feedbackElement.nextSibling);
 
     // Set video source
     uploadedVideo.src = URL.createObjectURL(file);
@@ -156,6 +175,12 @@ function handleVideoUpload(event) {
     uploadedVideo.addEventListener('ended', () => {
       statusBarElement.textContent = "Status: Paused.";
       isAnalyzingVideo = false;
+    });
+
+    // Update canvas size when video metadata loads
+    uploadedVideo.addEventListener('loadedmetadata', () => {
+      canvasElement.width = uploadedVideo.videoWidth;
+      canvasElement.height = uploadedVideo.videoHeight;
     });
   }
 }
@@ -181,6 +206,11 @@ function startVideoAnalysis() {
 // This main function runs every time the AI sees a person
 function onResults(results) {
   try {
+    // Only process if we have an uploaded video and canvas
+    if (!uploadedVideo || !canvasElement || !canvasCtx) {
+      return;
+    }
+
     // Frame rate limiting
     const currentTime = performance.now();
     if (currentTime - lastFrameTime < FRAME_INTERVAL) {
@@ -188,35 +218,22 @@ function onResults(results) {
     }
     lastFrameTime = currentTime;
 
-    // Determine which video source to use
-    const activeVideo = isAnalyzingVideo && uploadedVideo ? uploadedVideo : video;
-
     // Ensure we have valid video dimensions
-    if (!activeVideo.videoWidth || !activeVideo.videoHeight) {
+    if (!uploadedVideo.videoWidth || !uploadedVideo.videoHeight) {
       return;
     }
 
-    // Make the drawing canvas the same size as the active video
-    if (canvasElement.width !== activeVideo.videoWidth || canvasElement.height !== activeVideo.videoHeight) {
-      canvasElement.width = activeVideo.videoWidth;
-      canvasElement.height = activeVideo.videoHeight;
+    // Make sure canvas is properly sized
+    if (canvasElement.width !== uploadedVideo.videoWidth || canvasElement.height !== uploadedVideo.videoHeight) {
+      canvasElement.width = uploadedVideo.videoWidth;
+      canvasElement.height = uploadedVideo.videoHeight;
     }
 
-    // Clear the canvas and draw the video frame onto it
+    // Clear the canvas
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-    if (results.image) {
-      canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
-    }
 
     // If the AI finds pose dots, start the analysis
     if (results.poseLandmarks && results.poseLandmarks.length > 0) {
-      // Ensure we're ready for pose detection
-      if (!isInitialized) {
-        updateStatus("Pose detected! Ready to analyze.", 'ready');
-        isInitialized = true;
-      }
-
       // Draw the skeleton lines and dots on the screen
       if (typeof drawConnectors === 'function' && typeof POSE_CONNECTIONS !== 'undefined') {
         drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS, {color: '#00FF00', lineWidth: 4});
@@ -250,6 +267,7 @@ function onResults(results) {
       // --- End of Ski Coach Logic ---
     } else {
       feedbackElement.innerHTML = "Knee Angle: -- (no pose detected)";
+      // Status remains "Analyzing..." when AI fails to find landmarks (as requested)
     }
   } catch (error) {
     handleError(error, "Error processing pose data");
@@ -291,33 +309,7 @@ async function initializeApp() {
     // Connect our main function (onResults) to the AI
     pose.onResults(onResults);
 
-    updateStatus("Requesting camera access...", 'loading');
-
-    // Setup the Webcam with error handling
-    camera = new Camera(video, {
-      onFrame: async () => {
-        try {
-          if (pose && video.readyState >= 2) {
-            await pose.send({image: video});
-          }
-        } catch (error) {
-          console.error("Error sending frame to pose detection:", error);
-        }
-      },
-      width: 640,
-      height: 480
-    });
-
-    // Wait for camera to be ready
-    video.addEventListener('loadedmetadata', () => {
-      updateStatus("Camera ready. Stand in view to begin pose detection.", 'ready');
-    });
-
-    video.addEventListener('error', (error) => {
-      handleError(error, "Camera access failed. Please check permissions.");
-    });
-
-    await camera.start();
+    updateStatus("Ready! Upload a video to begin pose analysis.", 'ready');
 
   } catch (error) {
     handleError(error, "Failed to initialize application");
@@ -327,11 +319,11 @@ async function initializeApp() {
 // Cleanup function
 function cleanup() {
   try {
-    if (camera) {
-      camera.stop();
-    }
     if (pose) {
       pose.close();
+    }
+    if (uploadedVideo && uploadedVideo.src) {
+      URL.revokeObjectURL(uploadedVideo.src);
     }
   } catch (error) {
     console.error("Error during cleanup:", error);
