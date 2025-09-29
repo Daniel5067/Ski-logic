@@ -1,25 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
   <defs>
-    <!-- Mountain gradient -->
-    <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#4A90E2"/>
-      <stop offset="70%" stop-color="#2C5AA0"/>
-      <stop offset="100%" stop-color="#1A365D"/>
+    <!-- Futuristic mountain gradient -->
+    <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="50%" stop-color="#0099CC"/>
+      <stop offset="100%" stop-color="#004C99"/>
     </linearGradient>
 
     <!-- Text gradient -->
     <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#2C5AA0"/>
-      <stop offset="100%" stop-color="#4A90E2"/>
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="100%" stop-color="#004C99"/>
     </linearGradient>
+
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- Simple Alps mountain silhouette -->
-  <path d="M10 50 L25 25 L35 35 L45 20 L55 30 L70 50 Z" fill="url(#mountainGradient)"/>
+  <!-- Geometric mountain with clean angles -->
+  <path d="M10 50 L30 20 L40 30 L50 15 L60 25 L70 50 Z" fill="url(#mountainGradient)" filter="url(#glow)"/>
 
-  <!-- Company name -->
-  <text x="90" y="35" font-family="'Segoe UI', Arial, sans-serif" font-size="24" font-weight="700" fill="url(#textGradient)">Slope Logic</text>
+  <!-- Subtle scan line effect -->
+  <line x1="10" y1="35" x2="70" y2="35" stroke="#00D4FF" stroke-width="0.5" opacity="0.3"/>
+
+  <!-- Company name with modern font -->
+  <text x="90" y="35" font-family="'Segoe UI', system-ui, sans-serif" font-size="24" font-weight="300" fill="url(#textGradient)" letter-spacing="1px">SLOPE LOGIC</text>
 
   <!-- Tagline -->
-  <text x="90" y="50" font-family="'Segoe UI', Arial, sans-serif" font-size="10" font-weight="400" fill="#666" opacity="0.8">AI-Powered Ski Analysis</text>
+  <text x="90" y="50" font-family="'Segoe UI', system-ui, sans-serif" font-size="9" font-weight="300" fill="#00A8CC" opacity="0.8" letter-spacing="0.5px">AI-POWERED SKI ANALYSIS</text>
 </svg>

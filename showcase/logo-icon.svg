@@ -1,13 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
   <defs>
-    <!-- Mountain gradient -->
-    <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#4A90E2"/>
-      <stop offset="70%" stop-color="#2C5AA0"/>
-      <stop offset="100%" stop-color="#1A365D"/>
+    <!-- Futuristic mountain gradient -->
+    <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00D4FF"/>
+      <stop offset="50%" stop-color="#0099CC"/>
+      <stop offset="100%" stop-color="#004C99"/>
     </linearGradient>
+
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
   </defs>
 
-  <!-- Simple Alps mountain silhouette -->
-  <path d="M5 45 L15 20 L25 30 L35 15 L45 25 L55 45 Z" fill="url(#mountainGradient)"/>
+  <!-- Geometric mountain with clean angles -->
+  <path d="M5 45 L20 15 L30 25 L40 10 L50 20 L55 45 Z" fill="url(#mountainGradient)" filter="url(#glow)"/>
+
+  <!-- Subtle scan line -->
+  <line x1="5" y1="30" x2="55" y2="30" stroke="#00D4FF" stroke-width="0.5" opacity="0.4"/>
 </svg>
