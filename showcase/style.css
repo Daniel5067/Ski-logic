@@ -178,6 +178,59 @@ body {
     line-height: 1.4;
 }
 
+/* Form Status Messages */
+.form-status {
+    display: none;
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.success-message {
+    background: rgba(40, 167, 69, 0.15);
+    border: 2px solid rgba(40, 167, 69, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+}
+
+.success-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.success-message h3 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.success-message p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.error-message {
+    background: rgba(220, 53, 69, 0.15);
+    border: 2px solid rgba(220, 53, 69, 0.3);
+    border-radius: 20px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+}
+
+.error-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.error-message p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1rem;
+    margin: 0;
+}
+
 .hero-visual {
     display: flex;
     justify-content: center;
@@ -888,6 +941,26 @@ body {
 
     .form-note {
         font-size: 0.8rem;
+    }
+
+    .success-message {
+        padding: 1.5rem;
+    }
+
+    .success-message h3 {
+        font-size: 1.3rem;
+    }
+
+    .success-message p, .error-message p {
+        font-size: 0.9rem;
+    }
+
+    .success-icon {
+        font-size: 2.5rem;
+    }
+
+    .error-icon {
+        font-size: 1.8rem;
     }
 
     .feature-card {
