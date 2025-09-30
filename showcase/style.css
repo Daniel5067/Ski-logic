@@ -659,7 +659,7 @@ body {
     }
 
     .about-stats {
-        grid-template-columns: 1fr;
+        flex-direction: column;
         gap: 2rem;
     }
 
