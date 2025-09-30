@@ -504,61 +504,68 @@
             const formStatus = document.getElementById('form-status');
 
             if (signupForm && formStatus) {
-                signupForm.addEventListener('submit', async function(e) {
-                    e.preventDefault(); // Prevent default form submission
+                signupForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // Prevent default form submission
+                    event.stopPropagation(); // Stop event bubbling
 
-                    const formData = new FormData(this);
-                    const submitButton = this.querySelector('.cta-button');
-                    const originalText = submitButton.textContent;
+                    // Handle form submission asynchronously
+                    handleFormSubmission(event.target);
+                });
+            }
 
-                    // Show loading state
-                    submitButton.textContent = 'Signing up...';
-                    submitButton.disabled = true;
+            // Separate async function for form handling
+            async function handleFormSubmission(form) {
+                const formData = new FormData(form);
+                const submitButton = form.querySelector('.cta-button');
+                const originalText = submitButton.textContent;
 
-                    try {
-                        // Submit form data to Formspree
-                        const response = await fetch(this.action, {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'Accept': 'application/json'
-                            }
-                        });
+                // Show loading state
+                submitButton.textContent = 'Signing up...';
+                submitButton.disabled = true;
 
-                        if (response.ok) {
-                            // Success - hide form and show success message
-                            signupForm.style.display = 'none';
-                            formStatus.innerHTML = `
-                                <div class="success-message">
-                                    <div class="success-icon">🎉</div>
-                                    <h3>You're on the list!</h3>
-                                    <p>Thanks for signing up! We'll notify you as soon as Slope Logic is ready to help you master the mountain.</p>
-                                </div>
-                            `;
-                            formStatus.style.display = 'block';
-                        } else {
-                            throw new Error('Submission failed');
+                try {
+                    // Submit form data to Formspree
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
                         }
-                    } catch (error) {
-                        // Error - show error message and restore form
-                        formStatus.innerHTML = `
-                            <div class="error-message">
-                                <div class="error-icon">⚠️</div>
-                                <p>Oops! Something went wrong. Please try again.</p>
+                    });
+
+                    if (response.ok) {
+                        // Success - hide form and show success message
+                        document.getElementById('signup-form').style.display = 'none';
+                        document.getElementById('form-status').innerHTML = `
+                            <div class="success-message">
+                                <div class="success-icon">🎉</div>
+                                <h3>You're on the list!</h3>
+                                <p>Thanks for signing up! We'll notify you as soon as Slope Logic is ready to help you master the mountain.</p>
                             </div>
                         `;
-                        formStatus.style.display = 'block';
-
-                        // Restore button state
-                        submitButton.textContent = originalText;
-                        submitButton.disabled = false;
-
-                        // Hide error message after 5 seconds
-                        setTimeout(() => {
-                            formStatus.style.display = 'none';
-                        }, 5000);
+                        document.getElementById('form-status').style.display = 'block';
+                    } else {
+                        throw new Error('Submission failed');
                     }
-                });
+                } catch (error) {
+                    // Error - show error message and restore form
+                    document.getElementById('form-status').innerHTML = `
+                        <div class="error-message">
+                            <div class="error-icon">⚠️</div>
+                            <p>Oops! Something went wrong. Please try again.</p>
+                        </div>
+                    `;
+                    document.getElementById('form-status').style.display = 'block';
+
+                    // Restore button state
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+
+                    // Hide error message after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('form-status').style.display = 'none';
+                    }, 5000);
+                }
             }
 
         }); // End of DOMContentLoaded
