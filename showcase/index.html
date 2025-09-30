@@ -342,13 +342,7 @@
                 });
             });
 
-            // CTA button functionality
-            const ctaButton = document.querySelector('.cta-button');
-            if (ctaButton) {
-                ctaButton.addEventListener('click', function() {
-                    alert('Thank you for your interest! Early access signups coming soon.');
-                });
-            }
+            // Note: CTA button is now part of the form, no separate handler needed
 
             // Payment modal functionality
             function openPaymentModal(plan, price) {
