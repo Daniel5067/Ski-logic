@@ -115,6 +115,42 @@ body {
     line-height: 1.6;
 }
 
+/* Early Access Form */
+.early-access-form {
+    margin-top: 2.5rem;
+}
+
+.form-group {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.email-input {
+    flex: 1;
+    min-width: 300px;
+    padding: 1rem 1.5rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+.email-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.email-input:focus {
+    border-color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+}
+
 .cta-button {
     background: linear-gradient(135deg, #ff6b6b, #ee5a24);
     color: white;
@@ -126,11 +162,20 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+    white-space: nowrap;
 }
 
 .cta-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
+}
+
+.form-note {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    text-align: center;
+    margin: 0;
+    line-height: 1.4;
 }
 
 .hero-visual {
@@ -748,6 +793,16 @@ body {
         max-width: 450px;
     }
 
+    .form-group {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .email-input {
+        min-width: 280px;
+        margin-bottom: 1rem;
+    }
+
     .section-title {
         font-size: 2rem;
     }
@@ -818,6 +873,21 @@ body {
 
     .hero-image {
         max-width: 350px;
+    }
+
+    .email-input {
+        min-width: 250px;
+        padding: 0.9rem 1.2rem;
+        font-size: 1rem;
+    }
+
+    .cta-button {
+        padding: 0.9rem 2rem;
+        font-size: 1rem;
+    }
+
+    .form-note {
+        font-size: 0.8rem;
     }
 
     .feature-card {
