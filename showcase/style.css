@@ -548,8 +548,9 @@ body {
 .footer-content {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 2rem;
+    gap: 2rem;
 }
 
 .footer-logo {
@@ -585,6 +586,32 @@ body {
 
 .footer-links a:hover {
     opacity: 0.7;
+}
+
+.footer-contact {
+    text-align: right;
+}
+
+.footer-contact h4 {
+    color: white;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.contact-info p {
+    margin: 0.5rem 0;
+    opacity: 0.9;
+}
+
+.contact-info a {
+    color: #00D4FF;
+    text-decoration: none;
+    transition: opacity 0.3s ease;
+}
+
+.contact-info a:hover {
+    opacity: 0.8;
 }
 
 .footer-bottom {
@@ -662,6 +689,10 @@ body {
 
     .footer-links {
         justify-content: center;
+    }
+
+    .footer-contact {
+        text-align: center;
     }
 
     .pricing-grid {
