@@ -1,15 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 380 80" width="380" height="80">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60" width="80" height="60">
   <defs>
     <!-- Futuristic mountain gradient -->
     <linearGradient id="mountainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00D4FF"/>
       <stop offset="50%" stop-color="#0099CC"/>
-      <stop offset="100%" stop-color="#004C99"/>
-    </linearGradient>
-
-    <!-- Text gradient -->
-    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00D4FF"/>
       <stop offset="100%" stop-color="#004C99"/>
     </linearGradient>
 
@@ -24,14 +18,8 @@
   </defs>
 
   <!-- Geometric mountain with clean angles -->
-  <path d="M10 50 L30 20 L40 30 L50 15 L60 25 L70 50 Z" fill="url(#mountainGradient)" filter="url(#glow)"/>
+  <path d="M10 40 L30 10 L40 20 L50 5 L60 15 L70 40 Z" fill="url(#mountainGradient)" filter="url(#glow)"/>
 
   <!-- Subtle scan line effect -->
-  <line x1="10" y1="35" x2="70" y2="35" stroke="#00D4FF" stroke-width="0.5" opacity="0.3"/>
-
-  <!-- Company name with modern font -->
-  <text x="90" y="38" font-family="'Segoe UI', system-ui, sans-serif" font-size="32" font-weight="400" fill="url(#textGradient)" letter-spacing="1px">SLOPE LOGIC</text>
-
-  <!-- Tagline -->
-  <text x="90" y="55" font-family="'Segoe UI', system-ui, sans-serif" font-size="12" font-weight="300" fill="#00A8CC" opacity="0.8" letter-spacing="0.5px">AI-POWERED SKI ANALYSIS</text>
+  <line x1="10" y1="25" x2="70" y2="25" stroke="#00D4FF" stroke-width="0.5" opacity="0.3"/>
 </svg>
