@@ -59,8 +59,12 @@ body {
     font-family: 'Segoe UI', system-ui, sans-serif;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #2a5298;
+    background: linear-gradient(135deg, #00D4FF, #0099CC, #004C99);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
 .nav-menu {
