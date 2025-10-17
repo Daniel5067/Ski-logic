@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slope Logic - AI Ski Coach</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 48px 24px;
+      color: #1a202c;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 56px;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    .logo {
+      font-size: 56px;
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+    }
+
+    .tagline {
+      font-size: 20px;
+      color: #4a5568;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+    }
+
+    /* Upload Section */
+    .upload-section {
+      background: white;
+      border-radius: 16px;
+      padding: 48px 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      margin-bottom: 32px;
+      text-align: center;
+      animation: fadeInUp 0.6s ease-out 0.2s both;
+    }
+
+    .upload-title {
+      font-size: 32px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .upload-subtitle {
+      font-size: 16px;
+      color: #718096;
+      margin-bottom: 32px;
+      line-height: 1.6;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+      min-width: 180px;
+      height: 52px;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+    }
+
+    .primary-btn:active {
+      transform: translateY(0);
+    }
+
+    .secondary-outline-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 32px;
+      background: white;
+      color: #1e3c72;
+      border: 2px solid #1e3c72;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 180px;
+      height: 52px;
+    }
+
+    .secondary-outline-btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 60, 114, 0.2);
+    }
+
+    .secondary-outline-btn:active {
+      transform: translateY(0);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Video Player */
+    .hidden {
+      display: none !important;
+    }
+
+    #playerContainer {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      aspect-ratio: 16 / 9;
+      margin: 0 auto 32px auto;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      padding: 8px;
+      animation: fadeInUp 0.6s ease-out both;
+    }
+
+    #videoWrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background-color: #000;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    #resultsVideo, #resultsCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    #resultsVideo {
+      z-index: 1;
+      display: block;
+      visibility: visible;
+    }
+
+    #resultsCanvas {
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* Analyzing Indicator */
+    #analyzingIndicator {
+      position: absolute;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(30, 60, 114, 0.95);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 24px;
+      font-size: 14px;
+      font-weight: 600;
+      z-index: 10;
+      display: none;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Results Modal */
+    #resultsModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      overflow-y: auto;
+    }
+
+    #resultsModal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: slideUp 0.4s ease-out;
+      position: relative;
+      margin: auto;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #999;
+      cursor: pointer;
+      transition: color 0.2s;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    .modal-close-btn:hover {
+      color: #666;
+    }
+
+    .modal-results-content {
+      padding: 48px 40px 32px 40px;
+    }
+
+    .modal-email-section {
+      background: #f8f9fa;
+      padding: 32px 40px;
+      border-top: 2px solid #e9ecef;
+      text-align: center;
+    }
+
+    .modal-email-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1e3c72;
+      margin-bottom: 12px;
+    }
+
+    .modal-email-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-form input[type="email"] {
+      width: 100%;
+      padding: 14px 18px;
+      margin-bottom: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .modal-form input[type="email"]:focus {
+      outline: none;
+      border-color: #2a5298;
+      box-shadow: 0 0 0 3px rgba(42,82,152,0.1);
+    }
+
+    .modal-form button[type="submit"] {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 12px;
+    }
+
+    .modal-form button[type="submit"]:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30,60,114,0.4);
+    }
+
+    .modal-form .secondary-btn {
+      width: 100%;
+      padding: 14px;
+      background: white;
+      color: #1e3c72;
+      border: 2px solid #1e3c72;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-form .secondary-btn:hover {
+      background: #f8f9fa;
+      transform: translateY(-1px);
+    }
+
+    .modal-success {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .modal-success .emoji {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+
+    .modal-success h2 {
+      color: #1e3c72;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+
+    .modal-success p {
+      color: #666;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* Animations */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 24px 16px;
+      }
+      .logo {
+        font-size: 40px;
+      }
+      .tagline {
+        font-size: 16px;
+      }
+      .upload-section {
+        padding: 32px 24px;
+      }
+      .upload-title {
+        font-size: 24px;
+      }
+      .upload-btn {
+        width: 100%;
+        max-width: 280px;
+      }
+      #feedbackPanel {
+        padding: 32px 24px;
+      }
+      .modal-content {
+        padding: 40px 30px;
+        margin: 20px;
+      }
+      .modal-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">🎿 Slope Logic</div>
+      <div class="tagline">AI-Powered Ski Form Analysis</div>
+    </div>
+
+    <div class="upload-section">
+      <h2 class="upload-title">Analyze Your Ski Technique</h2>
+      <p class="upload-subtitle">See how our AI analyzes ski form in real-time, or upload your own video</p>
+      <div class="button-container">
+        <button id="seeDemoBtn" class="primary-btn">
+          🎥 See Demo
+        </button>
+        <label for="videoUpload" class="secondary-outline-btn">
+          📹 Try For Free
+        </label>
+        <input type="file" id="videoUpload" accept="video/*">
+      </div>
+    </div>
+
+    <div id="playerContainer" class="hidden">
+      <div id="analyzingIndicator">🔍 Analyzing your form...</div>
+      <div id="videoWrapper">
+        <video id="resultsVideo" controls playsinline></video>
+        <canvas id="resultsCanvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Modal (combines results + email form) -->
+  <div id="resultsModal">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="modalCloseBtn">×</button>
+      <div id="modalContentArea">
+        <!-- Results and email form will be inserted here dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1620248257/drawing_utils.js" crossorigin="anonymous"></script>
+
+  <script>
+    // ============================================
+    // IDEAL SKI FORM REFERENCE MODEL
+    // ============================================
+    const IDEAL_SKI_FORM = {
+      kneeAngle: {
+        min: 148,
+        max: 161,
+        unit: "degrees",
+        description: "Athletic stance with proper knee flex"
+      },
+      hipPosition: {
+        minForward: -2.4,
+        maxForward: 1.2,
+        unit: "cm",
+        description: "Hips slightly forward of shoulders for balance"
+      },
+      stanceWidth: {
+        minPercent: 70,
+        maxPercent: 84,
+        unit: "percent",
+        description: "Approximately shoulder-width stance"
+      },
+      torsoAngle: {
+        min: 10,
+        max: 16,
+        unit: "degrees",
+        description: "Slight forward lean in upper body"
+      },
+      weightDistribution: {
+        min: 45,
+        max: 55,
+        unit: "percent",
+        description: "Centered weight between both feet"
+      }
+    };
+
+    // ============================================
+    // BIOMECHANICAL ANALYSIS FUNCTIONS
+    // ============================================
+
+    function calculateAngle(pointA, pointB, pointC) {
+      const radians = Math.atan2(pointC.y - pointB.y, pointC.x - pointB.x) -
+                      Math.atan2(pointA.y - pointB.y, pointA.x - pointB.x);
+      let angle = Math.abs(radians * 180.0 / Math.PI);
+      if (angle > 180.0) {
+        angle = 360 - angle;
+      }
+      return angle;
+    }
+
+    function calculateDistance(pointA, pointB) {
+      const dx = pointB.x - pointA.x;
+      const dy = pointB.y - pointA.y;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function extractMeasurements(landmarks) {
+      const LEFT_SHOULDER = 11;
+      const RIGHT_SHOULDER = 12;
+      const LEFT_HIP = 23;
+      const RIGHT_HIP = 24;
+      const LEFT_KNEE = 25;
+      const RIGHT_KNEE = 26;
+      const LEFT_ANKLE = 27;
+      const RIGHT_ANKLE = 28;
+
+      // 1. Knee angles
+      const leftKneeAngle = calculateAngle(
+        landmarks[LEFT_HIP],
+        landmarks[LEFT_KNEE],
+        landmarks[LEFT_ANKLE]
+      );
+      const rightKneeAngle = calculateAngle(
+        landmarks[RIGHT_HIP],
+        landmarks[RIGHT_KNEE],
+        landmarks[RIGHT_ANKLE]
+      );
+      const avgKneeAngle = (leftKneeAngle + rightKneeAngle) / 2;
+
+      // 2. Hip position
+      const leftShoulder = landmarks[LEFT_SHOULDER];
+      const rightShoulder = landmarks[RIGHT_SHOULDER];
+      const leftHip = landmarks[LEFT_HIP];
+      const rightHip = landmarks[RIGHT_HIP];
+      const shoulderMidX = (leftShoulder.x + rightShoulder.x) / 2;
+      const hipMidX = (leftHip.x + rightHip.x) / 2;
+      const hipOffset = (hipMidX - shoulderMidX) * 100;
+
+      // 3. Stance width
+      const shoulderWidth = calculateDistance(leftShoulder, rightShoulder);
+      const leftAnkle = landmarks[LEFT_ANKLE];
+      const rightAnkle = landmarks[RIGHT_ANKLE];
+      const ankleWidth = calculateDistance(leftAnkle, rightAnkle);
+      const stanceWidthPercent = (ankleWidth / shoulderWidth) * 100;
+
+      // 4. Torso angle
+      const shoulderMidY = (leftShoulder.y + rightShoulder.y) / 2;
+      const hipMidY = (leftHip.y + rightHip.y) / 2;
+      const torsoAngle = Math.atan2(Math.abs(hipMidX - shoulderMidX), Math.abs(hipMidY - shoulderMidY)) * 180 / Math.PI;
+
+      // 5. Weight distribution
+      const ankleRangeX = Math.abs(rightAnkle.x - leftAnkle.x);
+      let weightBalance;
+      if (ankleRangeX > 0.001) {
+        const hipShiftFromLeft = hipMidX - leftAnkle.x;
+        weightBalance = (hipShiftFromLeft / ankleRangeX) * 100;
+        weightBalance = Math.max(0, Math.min(100, weightBalance));
+      } else {
+        weightBalance = 50;
+      }
+
+      return {
+        kneeAngle: avgKneeAngle,
+        hipPosition: hipOffset,
+        stanceWidth: stanceWidthPercent,
+        torsoAngle: torsoAngle,
+        weightDistribution: weightBalance
+      };
+    }
+
+    // ============================================
+    // SUMMARY REPORT FUNCTIONS
+    // ============================================
+
+    function calculateScore(value, min, max, metricName = '') {
+      if (value >= min && value <= max) {
+        console.log(`✅ ${metricName}: ${value.toFixed(1)} is in range [${min}, ${max}] → Score: 100`);
+        return 100;
+      }
+
+      const midpoint = (min + max) / 2;
+      const tolerance = (max - min) / 2;
+      const deviation = Math.abs(value - midpoint);
+      const beyondRange = deviation - tolerance; // How far past the edge of the ideal range
+
+      // Gradual scoring: lose 20 points per tolerance unit beyond the range
+      // This means: 1 tolerance past edge = 80, 2 tolerances = 60, 3 = 40, 4 = 20, 5+ = 0
+      const score = Math.max(0, 100 - (beyondRange / tolerance) * 20);
+
+      console.log(`⚠️ ${metricName}: ${value.toFixed(1)} outside range [${min}, ${max}]`);
+      console.log(`   Midpoint: ${midpoint.toFixed(1)}, Tolerance: ${tolerance.toFixed(1)}, Deviation: ${deviation.toFixed(1)}`);
+      console.log(`   Beyond range: ${beyondRange.toFixed(1)}, Score: ${Math.round(score)}`);
+
+      return Math.round(score);
+    }
+
+    function calculateStats(values) {
+      const avg = values.reduce((a, b) => a + b, 0) / values.length;
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+
+      const squaredDiffs = values.map(v => Math.pow(v - avg, 2));
+      const variance = squaredDiffs.reduce((a, b) => a + b, 0) / values.length;
+      const stdDev = Math.sqrt(variance);
+
+      return { avg, min, max, stdDev };
+    }
+
+    function analyzeAveragePerformance(measurements) {
+      if (measurements.length === 0) return null;
+
+      const summary = [];
+
+      // Extract all values for each metric
+      const kneeAngles = measurements.map(m => m.kneeAngle);
+      const hipPositions = measurements.map(m => m.hipPosition);
+      const stanceWidths = measurements.map(m => m.stanceWidth);
+      const torsoAngles = measurements.map(m => m.torsoAngle);
+      const weightDistributions = measurements.map(m => m.weightDistribution);
+
+      // Calculate stats for each metric
+      const kneeStats = calculateStats(kneeAngles);
+      const hipStats = calculateStats(hipPositions);
+      const stanceStats = calculateStats(stanceWidths);
+      const torsoStats = calculateStats(torsoAngles);
+      const weightStats = calculateStats(weightDistributions);
+
+      // 1. Knee Angle Analysis
+      const kneeScore = calculateScore(kneeStats.avg, IDEAL_SKI_FORM.kneeAngle.min, IDEAL_SKI_FORM.kneeAngle.max, 'Knee Angle');
+      let kneeMessage = '';
+      let kneeEmoji = '';
+      let kneeStatus = '';
+
+      if (kneeStats.avg < IDEAL_SKI_FORM.kneeAngle.min) {
+        // Too much knee bend (squatting too low)
+        kneeEmoji = kneeStats.avg < 140 ? "🔴" : "🟡";
+        kneeStatus = kneeStats.avg < 140 ? "error" : "warning";
+        if (kneeStats.avg < 140) {
+          kneeMessage = "Your knees are bent way too much - stand up taller! You shouldn't be squatting so low.";
+        } else {
+          kneeMessage = "Your knees are bent a bit too much - try standing up a little taller.";
+        }
+      } else if (kneeStats.avg > IDEAL_SKI_FORM.kneeAngle.max) {
+        // Legs too straight
+        kneeEmoji = kneeStats.avg > 170 ? "🔴" : "🟡";
+        kneeStatus = kneeStats.avg > 170 ? "error" : "warning";
+        if (kneeStats.avg > 170) {
+          kneeMessage = "Your knees are too straight - bend them more, like you're sitting on a chair!";
+        } else {
+          kneeMessage = "Your knees need a bit more flex - try bending them a little more.";
+        }
+      } else {
+        kneeEmoji = "🟢";
+        kneeStatus = "good";
+        kneeMessage = "Perfect knee bend! 💪 You kept your knees flexed just right throughout your run.";
+      }
+
+      summary.push({
+        category: "Knee Bend",
+        score: kneeScore,
+        message: kneeMessage,
+        emoji: kneeEmoji,
+        status: kneeStatus,
+        average: kneeStats.avg.toFixed(0) + "°",
+        range: `${kneeStats.min.toFixed(0)}-${kneeStats.max.toFixed(0)}°`,
+        consistency: kneeStats.stdDev.toFixed(1) + "°",
+        importance: 5  // Most important
+      });
+
+      // 2. Hip Position Analysis
+      const hipScore = calculateScore(hipStats.avg, IDEAL_SKI_FORM.hipPosition.minForward, IDEAL_SKI_FORM.hipPosition.maxForward, 'Hip Position');
+      let hipMessage = '';
+      let hipEmoji = '';
+      let hipStatus = '';
+
+      if (hipStats.avg < IDEAL_SKI_FORM.hipPosition.minForward) {
+        // Hips too far back
+        hipEmoji = hipStats.avg < -10 ? "🔴" : "🟡";
+        hipStatus = hipStats.avg < -10 ? "error" : "warning";
+        if (hipStats.avg < -10) {
+          hipMessage = "You're leaning back too much - move your hips forward! Pretend you're reaching for something in front of you.";
+        } else {
+          hipMessage = "Try leaning forward just a bit more from your hips.";
+        }
+      } else if (hipStats.avg > IDEAL_SKI_FORM.hipPosition.maxForward) {
+        // Hips too far forward
+        hipEmoji = hipStats.avg > 10 ? "🔴" : "🟡";
+        hipStatus = hipStats.avg > 10 ? "error" : "warning";
+        if (hipStats.avg > 10) {
+          hipMessage = "You're leaning too far forward - stand up a bit straighter!";
+        } else {
+          hipMessage = "Stand up just a tiny bit straighter.";
+        }
+      } else {
+        hipEmoji = "🟢";
+        hipStatus = "good";
+        hipMessage = "Great balance! You stayed centered perfectly throughout your run.";
+      }
+
+      summary.push({
+        category: "Balance",
+        score: hipScore,
+        message: hipMessage,
+        emoji: hipEmoji,
+        status: hipStatus,
+        average: hipStats.avg.toFixed(1),
+        range: `${hipStats.min.toFixed(1)} to ${hipStats.max.toFixed(1)}`,
+        consistency: hipStats.stdDev.toFixed(1),
+        importance: 2
+      });
+
+      // 3. Stance Width Analysis
+      const stanceScore = calculateScore(stanceStats.avg, IDEAL_SKI_FORM.stanceWidth.minPercent, IDEAL_SKI_FORM.stanceWidth.maxPercent, 'Stance Width');
+      let stanceMessage = '';
+      let stanceEmoji = '';
+      let stanceStatus = '';
+
+      if (stanceStats.avg < IDEAL_SKI_FORM.stanceWidth.minPercent) {
+        // Feet too close together
+        stanceEmoji = stanceStats.avg < 60 ? "🔴" : "🟡";
+        stanceStatus = stanceStats.avg < 60 ? "error" : "warning";
+        if (stanceStats.avg < 60) {
+          stanceMessage = "Your feet are way too close together - stand wider, about shoulder-width apart!";
+        } else {
+          stanceMessage = "Your feet are a bit too close - try standing a little wider.";
+        }
+      } else if (stanceStats.avg > IDEAL_SKI_FORM.stanceWidth.maxPercent) {
+        // Feet too far apart
+        stanceEmoji = stanceStats.avg > 100 ? "🔴" : "🟡";
+        stanceStatus = stanceStats.avg > 100 ? "error" : "warning";
+        if (stanceStats.avg > 100) {
+          stanceMessage = "Your feet are too far apart - bring them closer together!";
+        } else {
+          stanceMessage = "Your feet are a bit too wide - bring them slightly closer together.";
+        }
+      } else {
+        stanceEmoji = "🟢";
+        stanceStatus = "good";
+        stanceMessage = "Perfect stance width! Your feet were just right - not too wide, not too narrow.";
+      }
+
+      summary.push({
+        category: "Stance Width",
+        score: stanceScore,
+        message: stanceMessage,
+        emoji: stanceEmoji,
+        status: stanceStatus,
+        average: stanceStats.avg.toFixed(0) + "%",
+        range: `${stanceStats.min.toFixed(0)}-${stanceStats.max.toFixed(0)}%`,
+        consistency: stanceStats.stdDev.toFixed(1) + "%",
+        importance: 4
+      });
+
+      // 4. Torso Angle Analysis
+      const torsoScore = calculateScore(torsoStats.avg, IDEAL_SKI_FORM.torsoAngle.min, IDEAL_SKI_FORM.torsoAngle.max, 'Torso Angle');
+      let torsoMessage = '';
+      let torsoEmoji = '';
+      let torsoStatus = '';
+
+      if (torsoStats.avg < IDEAL_SKI_FORM.torsoAngle.min) {
+        // Too upright
+        torsoEmoji = torsoStats.avg < 5 ? "🔴" : "🟡";
+        torsoStatus = torsoStats.avg < 5 ? "error" : "warning";
+        if (torsoStats.avg < 5) {
+          torsoMessage = "You're standing too straight up - lean forward more from your hips, like you're riding a bike!";
+        } else {
+          torsoMessage = "Lean forward a bit more from your hips - you're standing a little too upright.";
+        }
+      } else if (torsoStats.avg > IDEAL_SKI_FORM.torsoAngle.max) {
+        // Leaning too far forward
+        torsoEmoji = torsoStats.avg > 25 ? "🔴" : "🟡";
+        torsoStatus = torsoStats.avg > 25 ? "error" : "warning";
+        if (torsoStats.avg > 25) {
+          torsoMessage = "You're leaning way too far forward - stand up straighter!";
+        } else {
+          torsoMessage = "You're leaning a bit too far forward - stand up just a little straighter.";
+        }
+      } else {
+        torsoEmoji = "🟢";
+        torsoStatus = "good";
+        torsoMessage = "Nice forward lean! You kept your body in the perfect position.";
+      }
+
+      summary.push({
+        category: "Forward Lean",
+        score: torsoScore,
+        message: torsoMessage,
+        emoji: torsoEmoji,
+        status: torsoStatus,
+        average: torsoStats.avg.toFixed(0) + "°",
+        range: `${torsoStats.min.toFixed(0)}-${torsoStats.max.toFixed(0)}°`,
+        consistency: torsoStats.stdDev.toFixed(1) + "°",
+        importance: 1
+      });
+
+      // 5. Weight Distribution Analysis
+      const weightScore = calculateScore(weightStats.avg, IDEAL_SKI_FORM.weightDistribution.min, IDEAL_SKI_FORM.weightDistribution.max, 'Weight Distribution');
+      let weightMessage = '';
+      let weightEmoji = '';
+      let weightStatus = '';
+
+      if (weightStats.avg < IDEAL_SKI_FORM.weightDistribution.min) {
+        // Weight too far left
+        weightEmoji = weightStats.avg < 35 ? "🔴" : "🟡";
+        weightStatus = weightStats.avg < 35 ? "error" : "warning";
+        if (weightStats.avg < 35) {
+          weightMessage = "You're leaning way too much to your left side - try to keep your weight centered between both feet!";
+        } else {
+          weightMessage = "You're leaning a bit to your left - try to stay more centered between both feet.";
+        }
+      } else if (weightStats.avg > IDEAL_SKI_FORM.weightDistribution.max) {
+        // Weight too far right
+        weightEmoji = weightStats.avg > 65 ? "🔴" : "🟡";
+        weightStatus = weightStats.avg > 65 ? "error" : "warning";
+        if (weightStats.avg > 65) {
+          weightMessage = "You're leaning way too much to your right side - try to keep your weight centered between both feet!";
+        } else {
+          weightMessage = "You're leaning a bit to your right - try to stay more centered between both feet.";
+        }
+      } else {
+        weightEmoji = "🟢";
+        weightStatus = "good";
+        weightMessage = "Perfect balance between both feet! You stayed centered throughout your run.";
+      }
+
+      summary.push({
+        category: "Left-Right Balance",
+        score: weightScore,
+        message: weightMessage,
+        emoji: weightEmoji,
+        status: weightStatus,
+        average: weightStats.avg.toFixed(0) + "%",
+        range: `${weightStats.min.toFixed(0)}-${weightStats.max.toFixed(0)}%`,
+        consistency: weightStats.stdDev.toFixed(1) + "%",
+        importance: 3
+      });
+
+      return summary;
+    }
+
+    function displaySummaryReport(summary) {
+      // Calculate overall score
+      const overallScore = Math.round(summary.reduce((sum, item) => sum + item.score, 0) / summary.length);
+
+      // Find issues (score < 70) and strengths (score >= 80)
+      const issues = summary.filter(item => item.score < 70);
+      const strengths = summary.filter(item => item.status === 'good');
+
+      // Sort issues by importance (higher importance first)
+      const sortedIssues = [...issues].sort((a, b) => b.importance - a.importance);
+
+      // Determine what to show
+      let focusItems = [];
+      let isFineTuning = false;
+
+      if (issues.length === 0) {
+        // All scores above 80 - show fine-tuning mode
+        isFineTuning = true;
+        const sortedByScore = [...summary].sort((a, b) => a.score - b.score);
+        focusItems = [sortedByScore[0]]; // Show lowest scoring metric
+      } else if (issues.length === 1) {
+        focusItems = [sortedIssues[0]];
+      } else {
+        // 2+ issues - show top 2 by importance
+        focusItems = sortedIssues.slice(0, 2);
+      }
+
+      // Build combined results + email HTML
+      const html = `
+        <div class="modal-results-content">
+          <div style="text-align: center; padding-bottom: 24px; border-bottom: 2px solid #e9ecef; margin-bottom: 32px;">
+            <div style="font-size: 14px; color: #999; letter-spacing: 1px; margin-bottom: 8px;">━━━━━━━━━━━━━━━━━━━━━━━━</div>
+            <h2 style="margin: 0; font-size: 28px; color: #1a202c; font-weight: 700;">📊 YOUR RESULTS</h2>
+            <div style="font-size: 14px; color: #999; letter-spacing: 1px; margin-top: 8px;">━━━━━━━━━━━━━━━━━━━━━━━━</div>
+          </div>
+
+          <div style="text-align: center; margin-bottom: 32px;">
+            <div style="font-size: 48px; font-weight: 800; color: ${overallScore >= 80 ? '#4caf50' : overallScore >= 60 ? '#ff9800' : '#f44336'}; margin-bottom: 8px;">
+              ${overallScore}/100
+            </div>
+            <div style="font-size: 14px; color: #718096;">Overall Score</div>
+          </div>
+
+          <div style="margin-bottom: 32px;">
+            <h3 style="font-size: 20px; margin: 0 0 16px 0; color: ${isFineTuning ? '#2196F3' : '#f44336'}; font-weight: 700;">
+              ${isFineTuning ? '🎯 FINE-TUNE THIS:' : '🎯 FOCUS ON THIS:'}
+            </h3>
+
+            ${focusItems.map((item, index) => `
+              <div style="margin-bottom: 16px; padding: 20px; background: ${isFineTuning ? '#e3f2fd' : '#fff5f5'}; border-radius: 12px; border-left: 4px solid ${isFineTuning ? '#2196F3' : '#f44336'};">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <div style="font-size: 18px; font-weight: 700; color: #1a202c;">
+                    ${focusItems.length > 1 ? `${index + 1}. ` : ''}${item.category}
+                  </div>
+                  <div style="font-size: 20px; font-weight: 700; color: ${isFineTuning ? '#2196F3' : '#f44336'};">
+                    ${item.score}/100
+                  </div>
+                </div>
+                <div style="font-size: 15px; line-height: 1.6; color: #4a5568;">
+                  ${item.message}
+                  ${index === 0 && !isFineTuning ? ' <strong style="color: #f44336;">This is the most important thing to work on right now!</strong>' : ''}
+                  ${isFineTuning ? ' <strong style="color: #2196F3;">You\'re doing great! Just polish this a bit more.</strong>' : ''}
+                </div>
+              </div>
+            `).join('')}
+
+            ${!isFineTuning ? '<div style="font-size: 14px; color: #718096; font-style: italic; margin-top: 12px;">💡 Fix this first, then we\'ll work on the next level!</div>' : ''}
+          </div>
+
+          ${strengths.length > 0 ? `
+            <div style="margin-bottom: 0;">
+              <h3 style="font-size: 18px; margin: 0 0 12px 0; color: #4caf50; font-weight: 700;">✅ WHAT YOU'RE DOING WELL:</h3>
+              <div style="background: #f1f8f4; border-radius: 12px; padding: 16px; border-left: 4px solid #4caf50;">
+                ${strengths.map(item => `
+                  <div style="margin-bottom: 6px; font-size: 15px; color: #1a202c;">
+                    • ${item.message.replace(/! 💪/, '!').replace(/!$/, '')}
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="modal-email-section">
+          <div class="modal-email-title">🎿 Join our waitlist! Get early access when we launch</div>
+          <div class="modal-email-subtitle">
+            Be the first to know when we release better AI models, new features, and improved analysis. No spam, just updates.
+          </div>
+          <form id="emailForm" class="modal-form" action="https://formspree.io/f/xovkdygy" method="POST">
+            <input
+              type="email"
+              name="email"
+              placeholder="Enter your email"
+              required
+            >
+            <button type="submit">Join Beta Waitlist</button>
+            <button type="button" class="secondary-btn" id="analyzeAnotherBtn">🔄 Analyze Another Video</button>
+          </form>
+        </div>
+      `;
+
+      // Show modal with content
+      const modalContentArea = document.getElementById('modalContentArea');
+      modalContentArea.innerHTML = html;
+      showResultsModal();
+    }
+
+    // ============================================
+    // RESULTS MODAL LOGIC
+    // ============================================
+
+    function showResultsModal() {
+      const modal = document.getElementById('resultsModal');
+      modal.classList.add('show');
+
+      // Set up event listeners after modal content is loaded
+      setTimeout(() => {
+        setupModalEventListeners();
+      }, 100);
+    }
+
+    function closeResultsModal() {
+      const modal = document.getElementById('resultsModal');
+      modal.classList.remove('show');
+    }
+
+    function resetToInitialState() {
+      // Hide video player
+      document.getElementById('playerContainer').classList.add('hidden');
+
+      // Show upload section
+      document.querySelector('.upload-section').style.display = 'block';
+
+      // Reset video
+      const video = document.getElementById('resultsVideo');
+      video.src = '';
+      video.load();
+
+      // Clear measurements
+      if (window.allMeasurements) {
+        window.allMeasurements = [];
+      }
+
+      // Close modal
+      closeResultsModal();
+    }
+
+    function setupModalEventListeners() {
+      const emailForm = document.getElementById('emailForm');
+      const analyzeAnotherBtn = document.getElementById('analyzeAnotherBtn');
+      const modalCloseBtn = document.getElementById('modalCloseBtn');
+      const modal = document.getElementById('resultsModal');
+
+      // Close button
+      if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeResultsModal);
+      }
+
+      // Close on outside click
+      if (modal) {
+        modal.addEventListener('click', (e) => {
+          if (e.target === modal) {
+            closeResultsModal();
+          }
+        });
+      }
+
+      // Analyze another video button
+      if (analyzeAnotherBtn) {
+        analyzeAnotherBtn.addEventListener('click', resetToInitialState);
+      }
+
+      // Handle email form submission
+      if (emailForm) {
+        emailForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(emailForm);
+          const submitButton = emailForm.querySelector('button[type="submit"]');
+          const originalText = submitButton.textContent;
+
+          submitButton.textContent = 'Joining...';
+          submitButton.disabled = true;
+
+          try {
+            const response = await fetch(emailForm.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                'Accept': 'application/json'
+              }
+            });
+
+            if (response.ok) {
+              // Show success message
+              const modalContentArea = document.getElementById('modalContentArea');
+              modalContentArea.innerHTML = `
+                <div class="modal-success">
+                  <div class="emoji">🎉</div>
+                  <h2>Thanks for Joining!</h2>
+                  <p>We'll notify you when we release new features and improved AI models. Check your email!</p>
+                </div>
+              `;
+
+              // Close modal after 2.5 seconds
+              setTimeout(() => {
+                closeResultsModal();
+              }, 2500);
+            } else {
+              throw new Error('Submission failed');
+            }
+          } catch (error) {
+            alert('Oops! Something went wrong. Please try again.');
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+          }
+        });
+      }
+    }
+
+    // ============================================
+    // MAIN APPLICATION LOGIC
+    // ============================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const videoUpload = document.getElementById('videoUpload');
+      const seeDemoBtn = document.getElementById('seeDemoBtn');
+      const uploadSection = document.querySelector('.upload-section');
+      const playerContainer = document.getElementById('playerContainer');
+      const resultsVideo = document.getElementById('resultsVideo');
+      const resultsCanvas = document.getElementById('resultsCanvas');
+      const analyzingIndicator = document.getElementById('analyzingIndicator');
+
+      // Make allMeasurements globally accessible for reset
+      window.allMeasurements = [];
+
+      const pose = new Pose({
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`
+      });
+
+      pose.setOptions({
+        modelComplexity: 1,
+        smoothLandmarks: true,
+        minDetectionConfidence: 0.5,
+        minTrackingConfidence: 0.5
+      });
+
+      pose.onResults(onResults);
+
+      // Function to load and play video
+      function loadAndPlayVideo(videoSource, isFile = false) {
+        console.log('📹 Loading video:', isFile ? videoSource.name : videoSource);
+
+        // Reset measurements
+        window.allMeasurements = [];
+
+        // Hide upload section
+        uploadSection.style.display = 'none';
+        console.log('✅ Upload section hidden');
+
+        // Show video player
+        playerContainer.classList.remove('hidden');
+        console.log('✅ Player container shown');
+
+        // Load video
+        if (isFile) {
+          resultsVideo.src = URL.createObjectURL(videoSource);
+          resultsVideo.muted = false; // User uploads have sound
+        } else {
+          resultsVideo.src = videoSource;
+          resultsVideo.muted = true; // Demo video is muted
+        }
+        resultsVideo.load();
+        console.log('✅ Video loaded');
+
+        // Autoplay when loaded
+        resultsVideo.addEventListener('loadedmetadata', () => {
+          console.log('📹 Video metadata loaded - dimensions:', resultsVideo.videoWidth, 'x', resultsVideo.videoHeight);
+          console.log('📹 Video element visibility:', window.getComputedStyle(resultsVideo).visibility);
+          console.log('📹 Video element display:', window.getComputedStyle(resultsVideo).display);
+          console.log('📹 Video element z-index:', window.getComputedStyle(resultsVideo).zIndex);
+
+          resultsVideo.play()
+            .then(() => console.log('▶️ Video playing successfully'))
+            .catch(err => console.error('❌ Video play error:', err));
+        }, { once: true });
+      }
+
+      // See Demo button handler
+      seeDemoBtn.addEventListener('click', () => {
+        console.log('🎥 See Demo button clicked');
+        loadAndPlayVideo('./assets/demo-ski-video.mp4', false);
+      });
+
+      // Try For Free (file upload) handler
+      videoUpload.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          loadAndPlayVideo(file, true);
+        }
+      });
+
+      resultsVideo.addEventListener('play', () => {
+        console.log('▶️ Video play event fired');
+
+        // Show analyzing indicator
+        analyzingIndicator.style.display = 'block';
+        console.log('✅ Analyzing indicator shown');
+
+        const processVideo = async () => {
+          if (resultsVideo.paused || resultsVideo.ended) return;
+          await pose.send({ image: resultsVideo });
+          requestAnimationFrame(processVideo);
+        };
+        requestAnimationFrame(processVideo);
+      });
+
+      resultsVideo.addEventListener('ended', () => {
+        // Hide analyzing indicator
+        analyzingIndicator.style.display = 'none';
+
+        if (window.allMeasurements.length > 0) {
+          const summary = analyzeAveragePerformance(window.allMeasurements);
+          displaySummaryReport(summary);
+        }
+      });
+
+      let resultsCount = 0;
+      function onResults(results) {
+        resultsCount++;
+
+        if (resultsCount === 1) {
+          console.log('🎨 First frame processed');
+          console.log('🎨 Canvas dimensions:', resultsCanvas.width, 'x', resultsCanvas.height);
+          console.log('🎨 Canvas visibility:', window.getComputedStyle(resultsCanvas).visibility);
+          console.log('🎨 Canvas z-index:', window.getComputedStyle(resultsCanvas).zIndex);
+        }
+
+        const canvasCtx = resultsCanvas.getContext('2d');
+        resultsCanvas.width = resultsVideo.videoWidth;
+        resultsCanvas.height = resultsVideo.videoHeight;
+        canvasCtx.clearRect(0, 0, resultsCanvas.width, resultsCanvas.height);
+
+        if (results.poseLandmarks) {
+          window.drawConnectors(canvasCtx, results.poseLandmarks, window.POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
+          window.drawLandmarks(canvasCtx, results.poseLandmarks, { color: '#FF0000', radius: 2 });
+
+          if (resultsCount === 1) {
+            console.log('✅ Skeleton drawn on canvas');
+          }
+
+          if (resultsCount % 30 === 0) {
+            const measurements = extractMeasurements(results.poseLandmarks);
+            window.allMeasurements.push(measurements);
+          }
+        } else if (resultsCount === 1) {
+          console.log('⚠️ No pose landmarks detected in first frame');
+        }
+      }
+    });
+  </script>
+</body>
+</html>
