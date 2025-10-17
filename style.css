@@ -560,6 +560,38 @@ body {
     font-weight: 500;
 }
 
+/* AI Demo Section */
+.ai-demo {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.demo-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: #666;
+    margin-bottom: 3rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.demo-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    background: white;
+}
+
+.demo-iframe {
+    width: 100%;
+    height: 900px;
+    border: none;
+    display: block;
+}
+
 /* Footer */
 .footer {
     background: #1a1a1a;
@@ -712,6 +744,10 @@ body {
     .amount {
         font-size: 3rem;
     }
+
+    .demo-iframe {
+        height: 700px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -787,5 +823,12 @@ body {
         font-size: 2.5rem;
     }
 
+    .demo-iframe {
+        height: 600px;
+    }
+
+    .demo-subtitle {
+        font-size: 1rem;
+    }
 
 }
