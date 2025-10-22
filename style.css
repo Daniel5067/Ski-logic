@@ -133,74 +133,34 @@ body {
     line-height: 1.6;
 }
 
-/* Early Access Form */
-.waitlist-form {
+/* Hero CTA */
+.hero-cta {
     margin-top: 2.5rem;
+    text-align: center;
 }
 
-.form-group {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
-}
-
-.email-input {
-    flex: 1;
-    min-width: 300px;
-    padding: 1rem 1.5rem;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
+.hero-cta-button {
+    display: inline-block;
+    padding: 22px 60px;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     color: white;
-    font-size: 1.1rem;
+    border-radius: 14px;
+    font-size: 22px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 24px rgba(30, 60, 114, 0.3);
     transition: all 0.3s ease;
-    outline: none;
 }
 
-.email-input::placeholder {
-    color: rgba(255, 255, 255, 0.7);
+.hero-cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(30, 60, 114, 0.4);
 }
 
-.email-input:focus {
-    border-color: rgba(255, 255, 255, 0.6);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
-}
-
-.cta-button {
-    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-    color: white;
-    padding: 1rem 2.5rem;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-    white-space: nowrap;
-}
-
-.cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(255, 107, 107, 0.6);
-}
-
-.form-note {
+.hero-cta-note {
+    margin-top: 15px;
     color: rgba(255, 255, 255, 0.8);
-    font-size: 0.9rem;
-    text-align: center;
-    margin: 0;
-    line-height: 1.4;
-}
-
-/* Form Status Messages */
-.form-status {
-    display: none;
-    margin-top: 2rem;
-    text-align: center;
+    font-size: 14px;
 }
 
 .success-message {
@@ -695,14 +655,13 @@ body {
         max-width: 450px;
     }
 
-    .form-group {
-        flex-direction: column;
-        align-items: center;
+    .hero-cta-button {
+        padding: 18px 50px;
+        font-size: 20px;
     }
 
-    .email-input {
-        min-width: 280px;
-        margin-bottom: 1rem;
+    .hero-cta-note {
+        font-size: 13px;
     }
 
     .section-title {
@@ -782,48 +741,17 @@ body {
         font-size: 2rem;
     }
 
-    .cta-button {
-        padding: 0.8rem 2rem;
-        font-size: 1rem;
-    }
-
     .hero-image {
         max-width: 350px;
     }
 
-    .email-input {
-        min-width: 250px;
-        padding: 0.9rem 1.2rem;
-        font-size: 1rem;
+    .hero-cta-button {
+        padding: 16px 40px;
+        font-size: 18px;
     }
 
-    .cta-button {
-        padding: 0.9rem 2rem;
-        font-size: 1rem;
-    }
-
-    .form-note {
-        font-size: 0.8rem;
-    }
-
-    .success-message {
-        padding: 1.5rem;
-    }
-
-    .success-message h3 {
-        font-size: 1.3rem;
-    }
-
-    .success-message p, .error-message p {
-        font-size: 0.9rem;
-    }
-
-    .success-icon {
-        font-size: 2.5rem;
-    }
-
-    .error-icon {
-        font-size: 1.8rem;
+    .hero-cta-note {
+        font-size: 12px;
     }
 
     .feature-card {

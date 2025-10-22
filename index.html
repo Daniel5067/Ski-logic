@@ -38,17 +38,13 @@
                 <h1 class="hero-title">Analyze Your Ski Form. Master the Mountain.</h1>
                 <p class="hero-subtitle">Revolutionary AI-powered ski coaching that transforms your technique through intelligent video analysis. Get professional-level feedback on your form, instantly.</p>
 
-                <!-- Waitlist Signup Form -->
-                <form action="https://formspree.io/f/xovkdygy" method="POST" class="waitlist-form" id="signup-form">
-                    <div class="form-group">
-                        <input type="email" name="email" required placeholder="Enter your email to join the waitlist" class="email-input">
-                        <button type="submit" class="cta-button">Join Waitlist</button>
-                    </div>
-                    <p class="form-note">Join 500+ skiers already signed up. No spam, unsubscribe anytime.</p>
-                </form>
-
-                <!-- Success/Error Message Container -->
-                <div id="form-status" class="form-status"></div>
+                <!-- Try AI Coach CTA -->
+                <div class="hero-cta">
+                    <a href="demo.html" class="hero-cta-button">
+                        🎿 Try AI Coach Free
+                    </a>
+                    <p class="hero-cta-note">No signup required • Instant analysis</p>
+                </div>
             </div>
             <div class="hero-visual">
                 <img src="hero-ski-analysis.jpg" alt="AI-powered ski form analysis showing skier with pose detection points and real-time feedback" class="hero-image">
@@ -187,7 +183,6 @@
     <!-- Smooth scrolling script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
             // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
@@ -197,80 +192,7 @@
                     });
                 });
             });
-
-            // Note: CTA button is now part of the form, no separate handler needed
-
-
-            // AJAX Form Submission for Early Access
-            const signupForm = document.getElementById('signup-form');
-            const formStatus = document.getElementById('form-status');
-
-            if (signupForm && formStatus) {
-                signupForm.addEventListener('submit', function(event) {
-                    event.preventDefault(); // Prevent default form submission
-                    event.stopPropagation(); // Stop event bubbling
-
-                    // Handle form submission asynchronously
-                    handleFormSubmission(event.target);
-                });
-            }
-
-            // Separate async function for form handling
-            async function handleFormSubmission(form) {
-                const formData = new FormData(form);
-                const submitButton = form.querySelector('.cta-button');
-                const originalText = submitButton.textContent;
-
-                // Show loading state
-                submitButton.textContent = 'Signing up...';
-                submitButton.disabled = true;
-
-                try {
-                    // Submit form data to Formspree
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-
-                    if (response.ok) {
-                        // Success - hide form and show success message
-                        document.getElementById('signup-form').style.display = 'none';
-                        document.getElementById('form-status').innerHTML = `
-                            <div class="success-message">
-                                <div class="success-icon">🎉</div>
-                                <h3>Thanks for joining!</h3>
-                                <p>We'll keep you updated on our progress and notify you when Slope Logic is ready to help you master the mountain.</p>
-                            </div>
-                        `;
-                        document.getElementById('form-status').style.display = 'block';
-                    } else {
-                        throw new Error('Submission failed');
-                    }
-                } catch (error) {
-                    // Error - show error message and restore form
-                    document.getElementById('form-status').innerHTML = `
-                        <div class="error-message">
-                            <div class="error-icon">⚠️</div>
-                            <p>Oops! Something went wrong. Please try again.</p>
-                        </div>
-                    `;
-                    document.getElementById('form-status').style.display = 'block';
-
-                    // Restore button state
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-
-                    // Hide error message after 5 seconds
-                    setTimeout(() => {
-                        document.getElementById('form-status').style.display = 'none';
-                    }, 5000);
-                }
-            }
-
-        }); // End of DOMContentLoaded
+        });
     </script>
 </body>
 </html>
