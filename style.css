@@ -23,8 +23,7 @@ body {
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(255, 255, 255, 0.98);
     z-index: 1000;
     padding: 1rem 0;
     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
@@ -221,13 +220,7 @@ body {
     height: auto;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    animation: float 6s ease-in-out infinite;
     object-fit: cover;
-}
-
-@keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
 }
 
 /* Features Section */
