@@ -210,6 +210,104 @@
       pointer-events: none;
     }
 
+    /* Hide native video controls and fullscreen */
+    video::-webkit-media-controls {
+      display: none !important;
+    }
+    video::-webkit-media-controls-enclosure {
+      display: none !important;
+    }
+    video::-webkit-media-controls-panel {
+      display: none !important;
+    }
+    video::-webkit-media-controls-fullscreen-button {
+      display: none !important;
+    }
+    video::-webkit-media-controls-play-button {
+      display: none !important;
+    }
+    video::-webkit-media-controls-timeline {
+      display: none !important;
+    }
+
+    /* Custom Video Controls */
+    .custom-controls {
+      position: absolute;
+      bottom: 12px;
+      left: 12px;
+      right: 12px;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 12px;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+    }
+
+    .control-btn {
+      background: white;
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .control-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+    }
+
+    .control-btn:active {
+      transform: scale(0.95);
+    }
+
+    .progress-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
+    @media (max-width: 768px) {
+      .custom-controls {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+
+      .progress-bar {
+        height: 4px;
+      }
+    }
+
     /* Analyzing Indicator */
     #analyzingIndicator {
       position: absolute;
@@ -521,8 +619,15 @@
     <div id="playerContainer" class="hidden">
       <div id="analyzingIndicator">🔍 Analyzing your form...</div>
       <div id="videoWrapper">
-        <video id="resultsVideo" controls playsinline></video>
+        <video id="resultsVideo" playsinline webkit-playsinline></video>
         <canvas id="resultsCanvas"></canvas>
+        <!-- Custom video controls -->
+        <div id="customControls" class="custom-controls">
+          <button id="playPauseBtn" class="control-btn">▶️</button>
+          <div id="progressBar" class="progress-bar">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1289,8 +1394,68 @@
         }
       });
 
+      // Custom video controls
+      const playPauseBtn = document.getElementById('playPauseBtn');
+      const progressBar = document.getElementById('progressBar');
+      const progressFill = document.getElementById('progressFill');
+
+      // Play/Pause button
+      if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', () => {
+          if (resultsVideo.paused) {
+            resultsVideo.play();
+            playPauseBtn.textContent = '⏸️';
+          } else {
+            resultsVideo.pause();
+            playPauseBtn.textContent = '▶️';
+          }
+        });
+      }
+
+      // Progress bar click to seek
+      if (progressBar) {
+        progressBar.addEventListener('click', (e) => {
+          const rect = progressBar.getBoundingClientRect();
+          const clickX = e.clientX - rect.left;
+          const percentage = clickX / rect.width;
+          resultsVideo.currentTime = percentage * resultsVideo.duration;
+        });
+      }
+
+      // Update progress bar
+      resultsVideo.addEventListener('timeupdate', () => {
+        if (progressFill && resultsVideo.duration) {
+          const percentage = (resultsVideo.currentTime / resultsVideo.duration) * 100;
+          progressFill.style.width = percentage + '%';
+        }
+      });
+
+      // Update button when video ends
+      resultsVideo.addEventListener('ended', () => {
+        if (playPauseBtn) {
+          playPauseBtn.textContent = '▶️';
+        }
+      });
+
+      // Prevent fullscreen
+      resultsVideo.addEventListener('webkitbeginfullscreen', (e) => {
+        e.preventDefault();
+        console.log('⚠️ Fullscreen prevented');
+      });
+
+      resultsVideo.addEventListener('fullscreenchange', () => {
+        if (document.fullscreenElement) {
+          document.exitFullscreen();
+        }
+      });
+
       resultsVideo.addEventListener('play', () => {
         console.log('▶️ Video play event fired');
+
+        // Update play button
+        if (playPauseBtn) {
+          playPauseBtn.textContent = '⏸️';
+        }
 
         // Show analyzing indicator
         analyzingIndicator.style.display = 'block';
@@ -1302,6 +1467,13 @@
           requestAnimationFrame(processVideo);
         };
         requestAnimationFrame(processVideo);
+      });
+
+      resultsVideo.addEventListener('pause', () => {
+        // Update play button
+        if (playPauseBtn) {
+          playPauseBtn.textContent = '▶️';
+        }
       });
 
       resultsVideo.addEventListener('ended', () => {
