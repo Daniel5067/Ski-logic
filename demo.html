@@ -113,6 +113,11 @@
       transform: translateY(0);
     }
 
+    .primary-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     .secondary-outline-btn {
       display: inline-flex;
       align-items: center;
@@ -140,8 +145,20 @@
       transform: translateY(0);
     }
 
+    .secondary-outline-btn.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
     input[type="file"] {
       display: none;
+    }
+
+    input[type="file"]:disabled + label {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     /* Video Player */
@@ -485,13 +502,19 @@
       <h2 class="upload-title">Analyze Your Ski Technique</h2>
       <p class="upload-subtitle">See how our AI analyzes ski form in real-time, or upload your own video</p>
       <div class="button-container">
-        <button id="seeDemoBtn" class="primary-btn">
+        <button id="seeDemoBtn" class="primary-btn" disabled>
           🎥 See Demo
         </button>
-        <label for="videoUpload" class="secondary-outline-btn">
+        <label for="videoUpload" class="secondary-outline-btn" id="tryFreeBtn">
           📹 Try For Free
         </label>
-        <input type="file" id="videoUpload" accept="video/*">
+        <input type="file" id="videoUpload" accept="video/*" disabled>
+      </div>
+
+      <!-- Loading Message -->
+      <div id="loadingMessage" style="text-align: center; padding: 20px; margin-top: 20px;">
+        <div style="font-size: 18px; margin-bottom: 10px; color: #1e3c72;">🤖 Loading AI Model...</div>
+        <div style="font-size: 14px; color: #666;">This takes 5-10 seconds on first load</div>
       </div>
     </div>
 
@@ -1135,15 +1158,22 @@
     document.addEventListener('DOMContentLoaded', () => {
       const videoUpload = document.getElementById('videoUpload');
       const seeDemoBtn = document.getElementById('seeDemoBtn');
+      const tryFreeBtn = document.getElementById('tryFreeBtn');
       const uploadSection = document.querySelector('.upload-section');
       const playerContainer = document.getElementById('playerContainer');
       const resultsVideo = document.getElementById('resultsVideo');
       const resultsCanvas = document.getElementById('resultsCanvas');
       const analyzingIndicator = document.getElementById('analyzingIndicator');
+      const loadingMessage = document.getElementById('loadingMessage');
 
       // Make allMeasurements globally accessible for reset
       window.allMeasurements = [];
 
+      // MediaPipe ready state
+      let mediaPipeReady = false;
+
+      // Initialize MediaPipe
+      console.log('🚀 Starting MediaPipe initialization...');
       const pose = new Pose({
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/${file}`
       });
@@ -1156,6 +1186,44 @@
       });
 
       pose.onResults(onResults);
+
+      // Initialize MediaPipe and wait for it to be ready
+      pose.initialize().then(() => {
+        mediaPipeReady = true;
+        console.log('✅ MediaPipe ready!');
+
+        // Enable buttons
+        seeDemoBtn.disabled = false;
+        videoUpload.disabled = false;
+        tryFreeBtn.classList.remove('disabled');
+
+        // Hide loading message
+        if (loadingMessage) {
+          loadingMessage.style.display = 'none';
+        }
+      }).catch(error => {
+        console.error('❌ MediaPipe failed to load:', error);
+        if (loadingMessage) {
+          loadingMessage.innerHTML = `
+            <div style="font-size: 18px; margin-bottom: 10px; color: #dc3545;">⚠️ AI Model Failed to Load</div>
+            <div style="font-size: 14px; color: #666;">Please refresh the page or check your internet connection</div>
+          `;
+        }
+        alert('AI model failed to load. Please refresh the page.');
+      });
+
+      // Add timeout warning if loading takes too long
+      setTimeout(() => {
+        if (!mediaPipeReady) {
+          console.warn('⚠️ MediaPipe is taking longer than expected...');
+          if (loadingMessage) {
+            loadingMessage.innerHTML = `
+              <div style="font-size: 18px; margin-bottom: 10px; color: #ff9800;">⏳ Still Loading...</div>
+              <div style="font-size: 14px; color: #666;">AI model is taking longer than expected. Please wait or refresh if this persists.</div>
+            `;
+          }
+        }
+      }, 15000);
 
       // Function to load and play video
       function loadAndPlayVideo(videoSource, isFile = false) {
@@ -1198,12 +1266,23 @@
 
       // See Demo button handler
       seeDemoBtn.addEventListener('click', () => {
+        if (!mediaPipeReady) {
+          console.warn('⚠️ MediaPipe not ready yet');
+          alert('AI model is still loading. Please wait a moment...');
+          return;
+        }
         console.log('🎥 See Demo button clicked');
         loadAndPlayVideo('./assets/demo-ski-video.mp4', false);
       });
 
       // Try For Free (file upload) handler
       videoUpload.addEventListener('change', (event) => {
+        if (!mediaPipeReady) {
+          console.warn('⚠️ MediaPipe not ready yet');
+          alert('AI model is still loading. Please wait a moment...');
+          event.target.value = ''; // Reset file input
+          return;
+        }
         const file = event.target.files[0];
         if (file) {
           loadAndPlayVideo(file, true);
