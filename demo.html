@@ -651,32 +651,32 @@
     // ============================================
     const IDEAL_SKI_FORM = {
       kneeAngle: {
-        min: 148,
-        max: 161,
+        min: 149.6,
+        max: 159.4,
         unit: "degrees",
         description: "Athletic stance with proper knee flex"
       },
       hipPosition: {
-        minForward: -2.4,
-        maxForward: 1.2,
+        minForward: -1.95,
+        maxForward: 0.75,
         unit: "cm",
         description: "Hips slightly forward of shoulders for balance"
       },
       stanceWidth: {
-        minPercent: 70,
-        maxPercent: 84,
+        minPercent: 71.75,
+        maxPercent: 82.25,
         unit: "percent",
         description: "Approximately shoulder-width stance"
       },
       torsoAngle: {
-        min: 10,
-        max: 16,
+        min: 10.75,
+        max: 15.25,
         unit: "degrees",
         description: "Slight forward lean in upper body"
       },
       weightDistribution: {
-        min: 45,
-        max: 55,
+        min: 46.25,
+        max: 53.75,
         unit: "percent",
         description: "Centered weight between both feet"
       }
@@ -771,23 +771,36 @@
     // ============================================
 
     function calculateScore(value, min, max, metricName = '') {
-      if (value >= min && value <= max) {
-        console.log(`✅ ${metricName}: ${value.toFixed(1)} is in range [${min}, ${max}] → Score: 100`);
-        return 100;
-      }
-
       const midpoint = (min + max) / 2;
       const tolerance = (max - min) / 2;
       const deviation = Math.abs(value - midpoint);
-      const beyondRange = deviation - tolerance; // How far past the edge of the ideal range
 
-      // Gradual scoring: lose 20 points per tolerance unit beyond the range
-      // This means: 1 tolerance past edge = 80, 2 tolerances = 60, 3 = 40, 4 = 20, 5+ = 0
-      const score = Math.max(0, 100 - (beyondRange / tolerance) * 20);
+      let score;
 
-      console.log(`⚠️ ${metricName}: ${value.toFixed(1)} outside range [${min}, ${max}]`);
-      console.log(`   Midpoint: ${midpoint.toFixed(1)}, Tolerance: ${tolerance.toFixed(1)}, Deviation: ${deviation.toFixed(1)}`);
-      console.log(`   Beyond range: ${beyondRange.toFixed(1)}, Score: ${Math.round(score)}`);
+      if (value >= min && value <= max) {
+        // Within ideal range: 80-100 based on distance from center
+        // At center (deviation=0) → 100
+        // At edge (deviation=tolerance) → 80
+        const distanceFromCenter = deviation / tolerance; // 0 to 1
+        score = 100 - (distanceFromCenter * 20); // 100 at center, 80 at edge
+        console.log(`✅ ${metricName}: ${value.toFixed(1)} in range [${min}, ${max}] → Score: ${Math.round(score)}`);
+      } else {
+        // Outside ideal range
+        const beyondRange = deviation - tolerance; // How far past the edge
+
+        if (beyondRange <= tolerance) {
+          // Just outside (up to 1 tolerance away): 50-80
+          const distanceBeyond = beyondRange / tolerance; // 0 to 1
+          score = 80 - (distanceBeyond * 30); // 80 at edge, 50 at 1 tolerance away
+        } else {
+          // Far outside (more than 1 tolerance away): 0-50
+          const distanceBeyond = (beyondRange - tolerance) / tolerance; // 0+
+          score = Math.max(0, 50 - (distanceBeyond * 25)); // 50 at 1 tolerance, decreases from there
+        }
+
+        console.log(`⚠️ ${metricName}: ${value.toFixed(1)} outside range [${min}, ${max}]`);
+        console.log(`   Midpoint: ${midpoint.toFixed(1)}, Deviation: ${deviation.toFixed(1)}, Beyond: ${(deviation - tolerance).toFixed(1)}, Score: ${Math.round(score)}`);
+      }
 
       return Math.round(score);
     }
@@ -824,7 +837,9 @@
       const weightStats = calculateStats(weightDistributions);
 
       // 1. Knee Angle Analysis
-      const kneeScore = calculateScore(kneeStats.avg, IDEAL_SKI_FORM.kneeAngle.min, IDEAL_SKI_FORM.kneeAngle.max, 'Knee Angle');
+      const kneeScoreRaw = calculateScore(kneeStats.avg, IDEAL_SKI_FORM.kneeAngle.min, IDEAL_SKI_FORM.kneeAngle.max, 'Knee Angle');
+      const kneeVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const kneeScore = Math.max(0, Math.min(100, Math.round(kneeScoreRaw + kneeVariance)));
       let kneeMessage = '';
       let kneeEmoji = '';
       let kneeStatus = '';
@@ -866,7 +881,9 @@
       });
 
       // 2. Hip Position Analysis
-      const hipScore = calculateScore(hipStats.avg, IDEAL_SKI_FORM.hipPosition.minForward, IDEAL_SKI_FORM.hipPosition.maxForward, 'Hip Position');
+      const hipScoreRaw = calculateScore(hipStats.avg, IDEAL_SKI_FORM.hipPosition.minForward, IDEAL_SKI_FORM.hipPosition.maxForward, 'Hip Position');
+      const hipVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const hipScore = Math.max(0, Math.min(100, Math.round(hipScoreRaw + hipVariance)));
       let hipMessage = '';
       let hipEmoji = '';
       let hipStatus = '';
@@ -908,7 +925,9 @@
       });
 
       // 3. Stance Width Analysis
-      const stanceScore = calculateScore(stanceStats.avg, IDEAL_SKI_FORM.stanceWidth.minPercent, IDEAL_SKI_FORM.stanceWidth.maxPercent, 'Stance Width');
+      const stanceScoreRaw = calculateScore(stanceStats.avg, IDEAL_SKI_FORM.stanceWidth.minPercent, IDEAL_SKI_FORM.stanceWidth.maxPercent, 'Stance Width');
+      const stanceVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const stanceScore = Math.max(0, Math.min(100, Math.round(stanceScoreRaw + stanceVariance)));
       let stanceMessage = '';
       let stanceEmoji = '';
       let stanceStatus = '';
@@ -950,7 +969,9 @@
       });
 
       // 4. Torso Angle Analysis
-      const torsoScore = calculateScore(torsoStats.avg, IDEAL_SKI_FORM.torsoAngle.min, IDEAL_SKI_FORM.torsoAngle.max, 'Torso Angle');
+      const torsoScoreRaw = calculateScore(torsoStats.avg, IDEAL_SKI_FORM.torsoAngle.min, IDEAL_SKI_FORM.torsoAngle.max, 'Torso Angle');
+      const torsoVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const torsoScore = Math.max(0, Math.min(100, Math.round(torsoScoreRaw + torsoVariance)));
       let torsoMessage = '';
       let torsoEmoji = '';
       let torsoStatus = '';
@@ -992,7 +1013,9 @@
       });
 
       // 5. Weight Distribution Analysis
-      const weightScore = calculateScore(weightStats.avg, IDEAL_SKI_FORM.weightDistribution.min, IDEAL_SKI_FORM.weightDistribution.max, 'Weight Distribution');
+      const weightScoreRaw = calculateScore(weightStats.avg, IDEAL_SKI_FORM.weightDistribution.min, IDEAL_SKI_FORM.weightDistribution.max, 'Weight Distribution');
+      const weightVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const weightScore = Math.max(0, Math.min(100, Math.round(weightScoreRaw + weightVariance)));
       let weightMessage = '';
       let weightEmoji = '';
       let weightStatus = '';
@@ -1037,8 +1060,9 @@
     }
 
     function displaySummaryReport(summary) {
-      // Calculate overall score
-      const overallScore = Math.round(summary.reduce((sum, item) => sum + item.score, 0) / summary.length);
+      // Calculate overall score (capped at 95)
+      const overallScoreRaw = Math.round(summary.reduce((sum, item) => sum + item.score, 0) / summary.length);
+      const overallScore = Math.min(95, overallScoreRaw);
 
       // Find issues (score < 70) and strengths (score >= 80)
       const issues = summary.filter(item => item.score < 70);
