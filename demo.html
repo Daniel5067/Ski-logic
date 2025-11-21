@@ -838,7 +838,7 @@
 
       // 1. Knee Angle Analysis
       const kneeScoreRaw = calculateScore(kneeStats.avg, IDEAL_SKI_FORM.kneeAngle.min, IDEAL_SKI_FORM.kneeAngle.max, 'Knee Angle');
-      const kneeVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const kneeVariance = (Math.random() * 2) - 1; // Random ±1 (reduced for consistency)
       const kneeScore = Math.max(0, Math.min(100, Math.round(kneeScoreRaw + kneeVariance)));
       let kneeMessage = '';
       let kneeEmoji = '';
@@ -882,7 +882,7 @@
 
       // 2. Hip Position Analysis
       const hipScoreRaw = calculateScore(hipStats.avg, IDEAL_SKI_FORM.hipPosition.minForward, IDEAL_SKI_FORM.hipPosition.maxForward, 'Hip Position');
-      const hipVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const hipVariance = (Math.random() * 2) - 1; // Random ±1 (reduced for consistency)
       const hipScore = Math.max(0, Math.min(100, Math.round(hipScoreRaw + hipVariance)));
       let hipMessage = '';
       let hipEmoji = '';
@@ -926,7 +926,7 @@
 
       // 3. Stance Width Analysis
       const stanceScoreRaw = calculateScore(stanceStats.avg, IDEAL_SKI_FORM.stanceWidth.minPercent, IDEAL_SKI_FORM.stanceWidth.maxPercent, 'Stance Width');
-      const stanceVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const stanceVariance = (Math.random() * 2) - 1; // Random ±1 (reduced for consistency)
       const stanceScore = Math.max(0, Math.min(100, Math.round(stanceScoreRaw + stanceVariance)));
       let stanceMessage = '';
       let stanceEmoji = '';
@@ -970,7 +970,7 @@
 
       // 4. Torso Angle Analysis
       const torsoScoreRaw = calculateScore(torsoStats.avg, IDEAL_SKI_FORM.torsoAngle.min, IDEAL_SKI_FORM.torsoAngle.max, 'Torso Angle');
-      const torsoVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const torsoVariance = (Math.random() * 2) - 1; // Random ±1 (reduced for consistency)
       const torsoScore = Math.max(0, Math.min(100, Math.round(torsoScoreRaw + torsoVariance)));
       let torsoMessage = '';
       let torsoEmoji = '';
@@ -1014,7 +1014,7 @@
 
       // 5. Weight Distribution Analysis
       const weightScoreRaw = calculateScore(weightStats.avg, IDEAL_SKI_FORM.weightDistribution.min, IDEAL_SKI_FORM.weightDistribution.max, 'Weight Distribution');
-      const weightVariance = (Math.random() * 5) - 2.5; // Random ±2.5
+      const weightVariance = (Math.random() * 2) - 1; // Random ±1 (reduced for consistency)
       const weightScore = Math.max(0, Math.min(100, Math.round(weightScoreRaw + weightVariance)));
       let weightMessage = '';
       let weightEmoji = '';
@@ -1060,9 +1060,10 @@
     }
 
     function displaySummaryReport(summary) {
-      // Calculate overall score (capped at 95)
-      const overallScoreRaw = Math.round(summary.reduce((sum, item) => sum + item.score, 0) / summary.length);
-      const overallScore = Math.min(95, overallScoreRaw);
+      // Calculate overall score (capped at 95, rounded to nearest 5 for consistency)
+      const overallScoreAvg = summary.reduce((sum, item) => sum + item.score, 0) / summary.length;
+      const overallScoreRounded = Math.round(overallScoreAvg / 5) * 5; // Round to nearest 5
+      const overallScore = Math.min(95, overallScoreRounded);
 
       // Find issues (score < 70) and strengths (score >= 80)
       const issues = summary.filter(item => item.score < 70);
