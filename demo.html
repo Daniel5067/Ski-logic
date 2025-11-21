@@ -1054,6 +1054,71 @@
       return summary;
     }
 
+    // ============================================
+    // HARDCODED DEMO VIDEO SCORES
+    // ============================================
+    // Returns fixed scores for demo video to ensure
+    // perfectly consistent results every time
+    function getDemoVideoScores() {
+      return [
+        {
+          category: "Knee Bend",
+          score: 82,
+          message: "Good knee flex! Your knees are bent well for absorbing terrain.",
+          emoji: "🟢",
+          status: "good",
+          average: "156°",
+          range: "152-160°",
+          consistency: "2.1°",
+          importance: 5
+        },
+        {
+          category: "Balance",
+          score: 78,
+          message: "Try leaning forward a bit more from your hips for better balance.",
+          emoji: "🟡",
+          status: "warning",
+          average: "-2.8",
+          range: "-4.2 to -1.5",
+          consistency: "0.9",
+          importance: 2
+        },
+        {
+          category: "Stance Width",
+          score: 85,
+          message: "Perfect stance width! Your feet were just right - not too wide, not too narrow.",
+          emoji: "🟢",
+          status: "good",
+          average: "78%",
+          range: "74-82%",
+          consistency: "2.4%",
+          importance: 4
+        },
+        {
+          category: "Forward Lean",
+          score: 88,
+          message: "Nice forward lean! You kept your body in the perfect position.",
+          emoji: "🟢",
+          status: "good",
+          average: "13°",
+          range: "11-15°",
+          consistency: "1.2°",
+          importance: 1
+        },
+        {
+          category: "Left-Right Balance",
+          score: 75,
+          message: "You're leaning a bit to your left - try to stay more centered between both feet.",
+          emoji: "🟡",
+          status: "warning",
+          average: "44%",
+          range: "40-48%",
+          consistency: "2.8%",
+          importance: 3
+        }
+      ];
+    }
+
     function displaySummaryReport(summary) {
       // Calculate overall score (capped at 95, rounded to nearest 5 for consistency)
       const overallScoreAvg = summary.reduce((sum, item) => sum + item.score, 0) / summary.length;
@@ -1506,7 +1571,15 @@
         // Hide analyzing indicator
         analyzingIndicator.style.display = 'none';
 
-        if (window.allMeasurements.length > 0) {
+        // Check if this is the demo video - use hardcoded scores for consistency
+        const isDemoVideo = resultsVideo.src.includes('demo-ski-video.mp4');
+
+        if (isDemoVideo) {
+          // HARDCODED DEMO SCORES - perfectly consistent every time
+          const demoSummary = getDemoVideoScores();
+          displaySummaryReport(demoSummary);
+        } else if (window.allMeasurements.length > 0) {
+          // Real analysis for user-uploaded videos
           const summary = analyzeAveragePerformance(window.allMeasurements);
           displaySummaryReport(summary);
         }
