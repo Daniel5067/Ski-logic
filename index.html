@@ -11,15 +11,13 @@
     </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slope Logic</title>
+    <title>Slope Logic - Ski Form Analysis</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="style.css">
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -31,62 +29,18 @@
             </div>
             <div class="nav-menu">
                 <a href="#hero" class="nav-link">Home</a>
-                <a href="#features" class="nav-link">Features</a>
                 <a href="#how-it-works" class="nav-link">How It Works</a>
-                <a href="demo.html" class="nav-link">Try Demo</a>
-                <a href="#about" class="nav-link">About</a>
+                <a href="demo.html" class="nav-link">Demo</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
     <section id="hero" class="hero">
-        <div class="hero-container">
-            <div class="hero-content">
-                <h1 class="hero-title">Analyze Your Ski Form. Master the Mountain.</h1>
-                <p class="hero-subtitle">Revolutionary AI-powered ski coaching that transforms your technique through intelligent video analysis. Get professional-level feedback on your form, instantly.</p>
-
-                <!-- Try AI Coach CTA -->
-                <div class="hero-cta">
-                    <a href="demo.html" class="hero-cta-button">
-                        🎿 Try AI Coach Free
-                    </a>
-                    <p class="hero-cta-note">No signup required • Instant analysis</p>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <img src="hero-ski-analysis.jpg" alt="AI-powered ski form analysis showing skier with pose detection points and real-time feedback" class="hero-image" loading="lazy">
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title">Why Choose Slope Logic?</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-video"></i>
-                    </div>
-                    <h3>Upload Any Video</h3>
-                    <p>Simply record your ski run with any camera or phone. Our AI works with any video quality or angle.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>Instant AI Analysis</h3>
-                    <p>Get real-time pose detection and form analysis powered by advanced machine learning technology.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Track Your Progress</h3>
-                    <p>Monitor your improvement over time with detailed analytics and professional-grade technique scoring.</p>
-                </div>
-            </div>
+        <div class="hero-container-centered">
+            <h1 class="hero-title">Ski Form Analysis</h1>
+            <p class="hero-subtitle">MediaPipe computer vision with real-time pose detection. Upload a video, get biomechanical analysis.</p>
+            <a href="demo.html" class="hero-cta-button">Try Demo</a>
         </div>
     </section>
 
@@ -98,57 +52,48 @@
                 <div class="step">
                     <div class="step-number">1</div>
                     <div class="step-icon">
-                        <i class="fas fa-camera"></i>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                            <circle cx="12" cy="13" r="4"></circle>
+                        </svg>
                     </div>
-                    <h3>Record Your Run</h3>
-                    <p>Capture your skiing with any camera or smartphone. No special equipment required.</p>
+                    <h3>Upload Video</h3>
+                    <p>Any format, any angle. Browser-based processing.</p>
                 </div>
-                <div class="step-arrow">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
+                <div class="step-arrow">→</div>
                 <div class="step">
                     <div class="step-number">2</div>
                     <div class="step-icon">
-                        <i class="fas fa-cloud-upload-alt"></i>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01"></path>
+                        </svg>
                     </div>
-                    <h3>Upload Your Video</h3>
-                    <p>Simply drag and drop your video into our platform. Processing begins instantly.</p>
+                    <h3>Pose Detection</h3>
+                    <p>33 skeletal landmarks tracked per frame using MediaPipe.</p>
                 </div>
-                <div class="step-arrow">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
+                <div class="step-arrow">→</div>
                 <div class="step">
                     <div class="step-number">3</div>
                     <div class="step-icon">
-                        <i class="fas fa-chart-bar"></i>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18 17l-5-5-3 3-3-3"></path>
+                        </svg>
                     </div>
-                    <h3>Get Instant Feedback</h3>
-                    <p>Receive detailed analysis of your technique with actionable insights to improve your skiing.</p>
+                    <h3>Biomechanical Analysis</h3>
+                    <p>Knee angle, hip position, weight distribution, stance width.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about">
+    <!-- Demo CTA -->
+    <section class="demo-section">
         <div class="container">
-            <div class="about-content">
-                <h2 class="section-title">Our Story</h2>
-                <div class="about-text">
-                    <p>Founded by a 15-year-old skier and developer, Slope Logic was built to make elite ski coaching accessible to everyone.</p>
-                    <p>Combining a passion for skiing with cutting-edge AI technology, we're democratizing professional ski instruction and helping skiers of all levels improve their technique.</p>
-                </div>
-                <div class="about-stats">
-                    <div class="stat">
-                        <h3>12+</h3>
-                        <p>12-Point Biomechanical Analysis</p>
-                    </div>
-                    <div class="stat">
-                        <h3>30+ FPS</h3>
-                        <p>Real-Time Video Frame Analysis</p>
-                    </div>
-                </div>
-            </div>
+            <h2 class="demo-title">See it in action</h2>
+            <p class="demo-description">Real-time skeletal tracking overlaid on video. Scores calculated from joint angles and body positioning.</p>
+            <a href="demo.html" class="demo-button">Open Demo</a>
         </div>
     </section>
 
@@ -156,37 +101,33 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="favicon-32x32.png" alt="Slope Logic" class="footer-logo-icon">
-                    <div class="footer-logo-text">
-                        <h3>Slope Logic</h3>
-                        <p>Master the Mountain with AI</p>
+                <div class="footer-left">
+                    <div class="footer-logo">
+                        <img src="favicon-32x32.png" alt="Slope Logic" class="footer-logo-icon">
+                        <span>Slope Logic</span>
                     </div>
+                    <p class="footer-tech">Built with MediaPipe + JavaScript</p>
                 </div>
-                <div class="footer-contact">
-                    <h4>Contact Us</h4>
-                    <div class="contact-info">
-                        <p><strong>Email:</strong> <a href="mailto:Slopelogic@outlook.com">Slopelogic@outlook.com</a></p>
-                    </div>
+                <div class="footer-right">
+                    <a href="mailto:Slopelogic@outlook.com">Slopelogic@outlook.com</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Slope Logic. All rights reserved.</p>
+                <p>&copy; 2025 Slope Logic</p>
             </div>
         </div>
     </footer>
 
-
-    <!-- Smooth scrolling script -->
+    <!-- Smooth scrolling -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth' });
+                    }
                 });
             });
         });
