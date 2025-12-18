@@ -27,7 +27,12 @@
                 <img src="android-chrome-192x192.png" alt="Slope Logic" class="logo-image">
                 <span class="logo-text">Slope Logic</span>
             </div>
-            <div class="nav-menu">
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-menu" id="navMenu">
                 <a href="#hero" class="nav-link">Home</a>
                 <a href="#how-it-works" class="nav-link">How It Works</a>
                 <a href="demo.html" class="nav-link">Demo</a>
@@ -118,9 +123,10 @@
         </div>
     </footer>
 
-    <!-- Smooth scrolling -->
+    <!-- Smooth scrolling and hamburger menu -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scrolling
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     e.preventDefault();
@@ -128,7 +134,32 @@
                     if (target) {
                         target.scrollIntoView({ behavior: 'smooth' });
                     }
+                    // Close mobile menu after clicking a link
+                    if (window.innerWidth <= 768) {
+                        navMenu.classList.remove('active');
+                        hamburger.classList.remove('active');
+                    }
                 });
+            });
+
+            // Hamburger menu toggle
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('navMenu');
+
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const isClickInsideNav = navMenu.contains(event.target);
+                const isClickOnHamburger = hamburger.contains(event.target);
+
+                if (!isClickInsideNav && !isClickOnHamburger && navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    hamburger.classList.remove('active');
+                }
             });
         });
     </script>

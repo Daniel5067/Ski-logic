@@ -72,6 +72,38 @@ body {
     color: #1a1a1a;
 }
 
+/* Hamburger Menu */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #1a1a1a;
+    margin: 3px 0;
+    transition: all 0.3s ease;
+    border-radius: 3px;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
 /* Hero Section */
 .hero {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -317,30 +349,70 @@ body {
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .nav-menu {
-        gap: 1.5rem;
-        font-size: 0.9rem;
+    /* Navigation - Show hamburger menu */
+    .hamburger {
+        display: flex;
     }
 
+    .nav-menu {
+        position: fixed;
+        top: 72px;
+        right: -100%;
+        width: 100%;
+        max-width: 300px;
+        background: white;
+        flex-direction: column;
+        padding: 2rem;
+        gap: 1.5rem;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        height: calc(100vh - 72px);
+        z-index: 1000;
+    }
+
+    .nav-menu.active {
+        right: 0;
+    }
+
+    .nav-link {
+        font-size: 1.1rem;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    /* Hero - Better spacing */
     .hero {
-        padding: 140px 20px 100px;
-        min-height: 500px;
+        padding: 140px 24px 80px;
+        min-height: auto;
     }
 
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
     }
 
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 1.1rem;
+        line-height: 1.7;
+        margin-bottom: 2rem;
     }
 
+    .hero-cta-button {
+        padding: 16px 40px;
+        font-size: 1.05rem;
+        width: 100%;
+        max-width: 280px;
+        min-height: 52px;
+    }
+
+    /* How It Works - Better spacing */
     .how-it-works {
-        padding: 80px 20px;
+        padding: 80px 24px;
     }
 
     .section-title {
-        font-size: 1.75rem;
+        font-size: 2rem;
         margin-bottom: 3rem;
     }
 
@@ -356,17 +428,40 @@ body {
     }
 
     .step-arrow {
-        transform: rotate(90deg);
-        padding-top: 0;
+        display: none;
     }
 
+    .step h3 {
+        font-size: 1.25rem;
+    }
+
+    .step p {
+        font-size: 1rem;
+    }
+
+    /* Demo Section - Better spacing */
     .demo-section {
-        padding: 80px 20px;
+        padding: 80px 24px;
     }
 
+    .demo-title {
+        font-size: 2rem;
+    }
+
+    .demo-description {
+        font-size: 1.05rem;
+    }
+
+    .demo-button {
+        padding: 16px 40px;
+        font-size: 1.05rem;
+        min-height: 52px;
+    }
+
+    /* Footer - Better spacing */
     .footer-content {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 2rem;
         text-align: center;
     }
 
@@ -376,35 +471,47 @@ body {
 }
 
 @media (max-width: 480px) {
+    /* Hero - Smaller screens */
     .hero {
-        padding: 120px 16px 80px;
-        min-height: 450px;
+        padding: 120px 20px 60px;
     }
 
     .hero-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
+        margin-bottom: 1.25rem;
     }
 
     .hero-subtitle {
-        font-size: 0.95rem;
+        font-size: 1rem;
+        margin-bottom: 1.75rem;
     }
 
-    .hero-cta-button,
-    .demo-button {
-        padding: 12px 28px;
-        font-size: 0.95rem;
+    .hero-cta-button {
+        padding: 14px 32px;
+        font-size: 1rem;
+        min-height: 48px;
     }
 
+    /* Sections - Tighter spacing on very small screens */
     .how-it-works {
-        padding: 60px 16px;
+        padding: 60px 20px;
     }
 
     .section-title {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .step h3 {
+        font-size: 1.15rem;
+    }
+
+    .step p {
+        font-size: 0.95rem;
     }
 
     .demo-section {
-        padding: 60px 16px;
+        padding: 60px 20px;
     }
 
     .demo-title {
@@ -412,14 +519,12 @@ body {
     }
 
     .demo-description {
-        font-size: 0.95rem;
+        font-size: 1rem;
     }
 
-    .step h3 {
-        font-size: 1.1rem;
-    }
-
-    .step p {
-        font-size: 0.9rem;
+    .demo-button {
+        padding: 14px 32px;
+        font-size: 1rem;
+        min-height: 48px;
     }
 }
