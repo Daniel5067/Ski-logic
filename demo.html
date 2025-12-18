@@ -20,11 +20,11 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #f8f8f8;
       min-height: 100vh;
       padding: 48px 24px;
-      color: #1a202c;
+      color: #1a1a1a;
     }
 
     .container {
@@ -35,50 +35,44 @@
     /* Header */
     .header {
       text-align: center;
-      margin-bottom: 56px;
-      animation: fadeInDown 0.6s ease-out;
+      margin-bottom: 48px;
     }
 
     .logo {
-      font-size: 56px;
-      font-weight: 800;
-      margin-bottom: 16px;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -1px;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #1a1a1a;
+      letter-spacing: -0.02em;
     }
 
     .tagline {
-      font-size: 20px;
-      color: #4a5568;
+      font-size: 1.05rem;
+      color: #666;
       font-weight: 400;
-      letter-spacing: 0.5px;
+      line-height: 1.6;
     }
 
     /* Upload Section */
     .upload-section {
       background: white;
-      border-radius: 16px;
+      border-radius: 8px;
       padding: 48px 40px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       margin-bottom: 32px;
       text-align: center;
-      animation: fadeInUp 0.6s ease-out 0.2s both;
     }
 
     .upload-title {
-      font-size: 32px;
+      font-size: 1.75rem;
       font-weight: 700;
-      color: #1a202c;
+      color: #1a1a1a;
       margin-bottom: 12px;
-      letter-spacing: -0.5px;
     }
 
     .upload-subtitle {
-      font-size: 16px;
-      color: #718096;
+      font-size: 1rem;
+      color: #666;
       margin-bottom: 32px;
       line-height: 1.6;
       max-width: 500px;
@@ -99,22 +93,21 @@
       align-items: center;
       justify-content: center;
       padding: 14px 32px;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      background: #1a1a1a;
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 16px;
+      border-radius: 6px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
+      transition: all 0.2s ease;
       min-width: 180px;
       height: 52px;
     }
 
     .primary-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .primary-btn:active {
@@ -132,21 +125,21 @@
       justify-content: center;
       padding: 14px 32px;
       background: white;
-      color: #1e3c72;
-      border: 2px solid #1e3c72;
-      border-radius: 12px;
-      font-size: 16px;
+      color: #1a1a1a;
+      border: 2px solid #1a1a1a;
+      border-radius: 6px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       min-width: 180px;
       height: 52px;
     }
 
     .secondary-outline-btn:hover {
-      background: #f8f9fa;
+      background: #f8f8f8;
       transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(30, 60, 114, 0.2);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .secondary-outline-btn:active {
@@ -322,20 +315,14 @@
       top: 16px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(30, 60, 114, 0.95);
+      background: rgba(26, 26, 26, 0.9);
       color: white;
-      padding: 12px 24px;
-      border-radius: 24px;
-      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 0.9rem;
       font-weight: 600;
       z-index: 10;
       display: none;
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
     }
 
     /* Results Modal */
@@ -361,13 +348,12 @@
 
     .modal-content {
       background: white;
-      border-radius: 20px;
+      border-radius: 8px;
       max-width: 600px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-      animation: slideUp 0.4s ease-out;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
       position: relative;
       margin: auto;
     }
@@ -407,9 +393,9 @@
     }
 
     .modal-email-title {
-      font-size: 20px;
+      font-size: 1.25rem;
       font-weight: 700;
-      color: #1e3c72;
+      color: #1a1a1a;
       margin-bottom: 12px;
     }
 
@@ -440,37 +426,37 @@
     .modal-form button[type="submit"] {
       width: 100%;
       padding: 14px;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+      background: #1a1a1a;
       color: white;
       border: none;
-      border-radius: 12px;
-      font-size: 16px;
+      border-radius: 6px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       margin-bottom: 12px;
     }
 
     .modal-form button[type="submit"]:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(30,60,114,0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
 
     .modal-form .secondary-btn {
       width: 100%;
       padding: 14px;
       background: white;
-      color: #1e3c72;
-      border: 2px solid #1e3c72;
-      border-radius: 12px;
-      font-size: 16px;
+      color: #1a1a1a;
+      border: 2px solid #1a1a1a;
+      border-radius: 6px;
+      font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
     }
 
     .modal-form .secondary-btn:hover {
-      background: #f8f9fa;
+      background: #f8f8f8;
       transform: translateY(-1px);
     }
 
@@ -485,8 +471,8 @@
     }
 
     .modal-success h2 {
-      color: #1e3c72;
-      font-size: 28px;
+      color: #1a1a1a;
+      font-size: 1.75rem;
       font-weight: 700;
       margin-bottom: 12px;
     }
@@ -497,38 +483,24 @@
       line-height: 1.6;
     }
 
-    /* Animations */
-    @keyframes fadeInDown {
-      from {
-        opacity: 0;
-        transform: translateY(-20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    /* Back Button */
+    .back-to-home {
+      display: inline-block;
+      margin-bottom: 32px;
+      padding: 10px 20px;
+      background: white;
+      color: #1a1a1a;
+      border: 2px solid #1a1a1a;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
     }
 
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .back-to-home:hover {
+      background: #1a1a1a;
+      color: white;
     }
 
     /* Responsive */
@@ -563,45 +535,15 @@
         font-size: 24px;
       }
     }
-    /* Back to Home Button */
-    .back-to-home {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      padding: 12px 24px;
-      background: white;
-      color: #1e3c72;
-      border: 2px solid #1e3c72;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      text-decoration: none;
-      z-index: 100;
-      transition: all 0.2s;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .back-to-home:hover {
-      background: #1e3c72;
-      color: white;
-    }
-
-    @media (max-width: 768px) {
-      .back-to-home {
-        padding: 10px 18px;
-        font-size: 14px;
-      }
-    }
   </style>
 </head>
 <body>
-  <!-- Back to Home Button -->
-  <a href="/" class="back-to-home">← Back to Home</a>
-
   <div class="container">
+    <a href="/" class="back-to-home">← Back</a>
+
     <div class="header">
-      <div class="logo">🎿 Slope Logic</div>
-      <div class="tagline">AI-Powered Ski Form Analysis</div>
+      <div class="logo">AI Ski Coach Demo</div>
+      <div class="tagline">Upload your video to see instant analysis</div>
     </div>
 
     <div class="upload-section">
@@ -1213,9 +1155,9 @@
         </div>
 
         <div class="modal-email-section">
-          <div class="modal-email-title">🎿 Join our waitlist! Get early access when we launch</div>
+          <div class="modal-email-title">Get Updates</div>
           <div class="modal-email-subtitle">
-            Be the first to know when we release better AI models, new features, and improved analysis. No spam, just updates.
+            Be notified when we release new features and improvements.
           </div>
           <form id="emailForm" class="modal-form" action="https://formspree.io/f/xovkdygy" method="POST">
             <input
@@ -1224,8 +1166,8 @@
               placeholder="Enter your email"
               required
             >
-            <button type="submit">Join Beta Waitlist</button>
-            <button type="button" class="secondary-btn" id="analyzeAnotherBtn">🔄 Analyze Another Video</button>
+            <button type="submit">Get Updates</button>
+            <button type="button" class="secondary-btn" id="analyzeAnotherBtn">Analyze Another Video</button>
           </form>
         </div>
       `;
